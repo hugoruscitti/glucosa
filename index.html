@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Glucosa by hugoruscitti</title>
+    <title>Glucosa</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -17,11 +17,11 @@
       <header>
         <h1>Glucosa</h1>
         <p>Una biblioteca para hacer juegos usando cairo y sugar xo</p>
-        <p class="view"><a href="https://github.com/hugoruscitti/glucosa">View the Project on GitHub <small>hugoruscitti/glucosa</small></a></p>
+        <p class="view"><a href="https://github.com/hugoruscitti/glucosa">Ver el proyecto en GitHub <small>hugoruscitti/glucosa</small></a></p>
         <ul>
-          <li><a href="https://github.com/hugoruscitti/glucosa/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/hugoruscitti/glucosa/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/hugoruscitti/glucosa">View On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/hugoruscitti/glucosa/zipball/master">Descargar <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/hugoruscitti/glucosa/tarball/master">Descargar <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/hugoruscitti/glucosa">Ver en <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
@@ -53,15 +53,36 @@ orientada a crear juegos sobre cairo y gtk !</p>
 <h3>¿Una mira rápida?</h3>
 
 <pre><code>import glucosa
-glucosa.init()
+...
+# TODO: hacer una funcion init para que la creacion de la ventana
+# gtk esté dentro de glucosa, o una función llamada demo que haga algo.
 </code></pre>
 
 <h3>Instalación</h3>
 
+<p>En un sistema Ubuntu, necesitas tener instalado pygtk y pycairo para comenzar. Luego,
+tienes que descargar glucosa y un pequeño ejemplo:
+
+<pre><code>wget https://raw.github.com/hugoruscitti/glucosa/master/glucosa.py
+wget https://raw.github.com/hugoruscitti/glucosa/master/demo.py
+</code></pre>
+
+Listo, ya está instalado. Ahora puedes probar nuestro ejemplo:
+
+<pre><code>python demo.py
+</code></pre>
+
+Otra opción de instalación, es descargarte el repositorio completo y
+explorar el resto de los archivos:
+
+<pre><code>git clone git@github.com:hugoruscitti/glucosa.git</code></pre>
+
+
+
       </section>
       <footer>
-        <p>This project is maintained by <a href="https://github.com/hugoruscitti">hugoruscitti</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+        <p>Mantenido por lo desarrolladores de <a href="http://www.pilas-engine.com.ar">pilas-engine</a></p>
+        <p><small>Alojado en GitHub Pages &mdash; Diseño <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
