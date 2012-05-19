@@ -43,6 +43,8 @@ class MainLoop:
 
     def _on_draw(self, event, a):
         context = self.widget.window.cairo_create()
+        window_size = self.widget.get_window().get_size()
+        glucosa.fill(context, (50,50,50), window_size)
         self.controller.on_draw(context)
 
 

@@ -1,10 +1,9 @@
 import cairo
 import os
 
-def fill(context, color):
+def fill(context, color, size):
     context.set_source_rgba(*color)
-    # TODO: que pinte todo el rectangulo de la ventana.
-    context.rectangle(0, 0, 200, 100)
+    context.rectangle(0, 0, size[0], size[1])
     context.fill()
 
 def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_height=None):
