@@ -67,14 +67,27 @@ class Frame(Image):
         self.rows = rows
         self.frame_index = 0
         self.frame_limit = cols * rows
+        self.dx = 0
+        self.dy = 0
+        self.frame_width = self.surface.get_width() / self.cols
+        self.frame_height = self.surface.get_height() / self.rows
 
     def set_frame(self, index):
         self.frame_index = index
 
-    def blit(self, conext, x, y):
+    def blit(self, context, x, y):
         #TODO usar glucosa.blit_surface con parametros para que dibuje
         # solo una parte del tile
-        pass
+        glucosa.blit_surface(context, self.surface, x, y, self.dx, self.dy,
+                             self.frame_width, self.frame_height)
+
+    def create_frame_coordinates(self):
+        """ Calcula la posicion del cuadro de animación de la Imagen."""
+        frame_col = self.frame_index % self.cols
+        frame_row = self.frame_index / self.cols
+        
+        self.dx = frame_col * self.frame_width
+        self.dy = frame_row * self.frame_height
 
     def advance(self):
         """Avanza un cuadro de animación.
@@ -89,6 +102,8 @@ class Frame(Image):
             self.frame_index = 0
             return True
 
+        self.create_frame_coordinates()
+        
         return False
 
 class Sprite:
@@ -103,7 +118,8 @@ class Sprite:
         self.image.blit(context, self.x, self.y)
 
     def update(self):
-        pass
+        if (self.image.__class__.__name__ == "Frame"):
+            self.image.advance()
 
 class Game:
     """Es el administrador del juego.
@@ -116,12 +132,16 @@ class Game:
         self.window = create_window()
         self.mainloop = MainLoop(self, self.window, fps=60)
         self.actor = Sprite(Image('../clock-cairo/data/terron.png'), 0, 0)
+        self.actor_animado = Sprite(Frame('data/moneda.png', 8), 0, 0)
+        self.actor_animado.y = 60
 
-    def on_update(self):
+    def on_update(self):        
         self.actor.x += 1
+        self.actor_animado.update()
 
     def on_draw(self, context):
         self.actor.draw(context)
+        self.actor_animado.draw(context)
 
     def on_event(self, event):
         # TODO: como hago para gestionar los eventos (y que gtk los tire) ?
