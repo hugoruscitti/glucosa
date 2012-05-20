@@ -141,9 +141,19 @@ class Text:
 
     def draw(self, context):
         
-        glucosa.render_text(context, self.x, self.y, self.text, 
-                            self.color, 
-                            self.size)
+        lines = self.text.split('\n')
+
+        dy = 0
+        
+        for line in lines:
+            text_width, text_heght = glucosa.render_text(context, 
+                                                         self.x, 
+                                                         self.y + dy, 
+                                                         line, 
+                                                         self.color, 
+                                                         self.size)
+            dy += text_heght
+
     
 class Game:
     """Es el administrador del juego.
@@ -158,7 +168,7 @@ class Game:
         self.actor = Sprite(Image('../clock-cairo/data/terron.png'), 0, 0)
         self.actor_animado = Sprite(Frame('data/moneda.png', 8), 0, 0)
         self.actor_animado.y = 60
-        self.texto = Text("Hola Mundo", 0, 150, 12)
+        self.texto = Text("Hola Mundo\nBienvenido a Glucosa!", 0, 150)
 
     def on_update(self):        
         self.actor.x += 1

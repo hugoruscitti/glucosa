@@ -28,6 +28,8 @@ def load_surface(path):
     return cairo.ImageSurface.create_from_png(path)
 
 def render_text(context, x, y, text, color, size):
+    """ Renderiza el texto y devuelve el ancho 
+    y alto del texto renderizado"""
     
     context.set_source_rgba(*color)
     
@@ -39,6 +41,7 @@ def render_text(context, x, y, text, color, size):
     context.move_to(x, y)
     
     context.show_text(text)
-        
+    
+    return context.text_extents(text)[2:4]
     
     
