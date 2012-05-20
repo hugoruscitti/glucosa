@@ -67,10 +67,11 @@ class Frame(Image):
         self.rows = rows
         self.frame_index = 0
         self.frame_limit = cols * rows
-        self.dx = 0
-        self.dy = 0
         self.frame_width = self.surface.get_width() / self.cols
         self.frame_height = self.surface.get_height() / self.rows
+        
+        self.frame_coordinates = []
+        self.create_frame_coordinates()
 
     def set_frame(self, index):
         self.frame_index = index
@@ -78,17 +79,26 @@ class Frame(Image):
     def blit(self, context, x, y):
         #TODO usar glucosa.blit_surface con parametros para que dibuje
         # solo una parte del tile
-        glucosa.blit_surface(context, self.surface, x, y, self.dx, self.dy,
+        glucosa.blit_surface(context, self.surface, x, y, 
+                             self.frame_coordinates[self.frame_index][0], 
+                             self.frame_coordinates[self.frame_index][1],
                              self.frame_width, self.frame_height)
 
     def create_frame_coordinates(self):
-        """ Calcula la posicion del cuadro de animación de la Imagen."""
-        frame_col = self.frame_index % self.cols
-        frame_row = self.frame_index / self.cols
+        """ Calcula las posiciones del cuadro de animación de la Imagen."""
         
-        self.dx = frame_col * self.frame_width
-        self.dy = frame_row * self.frame_height
-
+        cont = 0
+        while cont <= self.frame_limit:
+            frame_col = cont % self.cols
+            frame_row = cont / self.cols
+            
+            dx = frame_col * self.frame_width
+            dy = frame_row * self.frame_height
+            
+            self.frame_coordinates.append([dx, dy])
+            
+            cont += 1
+        
     def advance(self):
         """Avanza un cuadro de animación.
 
@@ -102,8 +112,6 @@ class Frame(Image):
             self.frame_index = 0
             return True
 
-        self.create_frame_coordinates()
-        
         return False
 
 class Sprite:
