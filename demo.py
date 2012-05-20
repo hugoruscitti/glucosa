@@ -129,6 +129,22 @@ class Sprite:
         if (self.image.__class__.__name__ == "Frame"):
             self.image.advance()
 
+class Text:
+    """ Muestra un texto en la pantalla """
+    
+    def __init__(self, text, x, y, size=12, color=(0,0,0)):
+        self.text = text
+        self.x = x
+        self.y = y
+        self.size = size
+        self.color = color
+
+    def draw(self, context):
+        
+        glucosa.render_text(context, self.x, self.y, self.text, 
+                            self.color, 
+                            self.size)
+    
 class Game:
     """Es el administrador del juego.
 
@@ -142,6 +158,7 @@ class Game:
         self.actor = Sprite(Image('../clock-cairo/data/terron.png'), 0, 0)
         self.actor_animado = Sprite(Frame('data/moneda.png', 8), 0, 0)
         self.actor_animado.y = 60
+        self.texto = Text("Hola Mundo", 0, 150, 12)
 
     def on_update(self):        
         self.actor.x += 1
@@ -150,6 +167,7 @@ class Game:
     def on_draw(self, context):
         self.actor.draw(context)
         self.actor_animado.draw(context)
+        self.texto.draw(context)
 
     def on_event(self, event):
         # TODO: como hago para gestionar los eventos (y que gtk los tire) ?

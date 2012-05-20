@@ -26,3 +26,19 @@ def load_surface(path):
 
     # TODO: no asumir que siempre que cargan PNGs.
     return cairo.ImageSurface.create_from_png(path)
+
+def render_text(context, x, y, text, color, size):
+    
+    context.set_source_rgba(*color)
+    
+    context.select_font_face("Monospace",
+                cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+    
+    context.set_font_size(size)
+    
+    context.move_to(x, y)
+    
+    context.show_text(text)
+        
+    
+    
