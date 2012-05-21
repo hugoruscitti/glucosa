@@ -115,7 +115,15 @@ class Frame(Image):
 
 
 class Sprite:
-    """Representa a un personaje dentro del juego."""
+    """Representa a un personaje con apariencia de imagen o animación.
+
+        >>> imagen = glucosa.Image('data/aceituna.png')
+        >>> sprite = glucosa.Sprite(imagen, 0, 0)
+        >>> sprite.draw(contexto)
+
+    .. image:: ../../data/aceituna.png
+
+    """
 
     def __init__(self, image, x, y):
         self.image = image
@@ -130,7 +138,14 @@ class Sprite:
             self.image.advance()
 
 class Text:
-    """ Muestra un texto en la pantalla """
+    """Muestra un texto en la pantalla.
+
+        >>> texto = glucosa.Text('Hola Mundo|nBienvenido a Glucosa!', 10, 100, face='Arial', size=18)
+        >>> texto.draw(contexto)
+
+    .. image:: images/texto.png
+
+    """
 
     def __init__(self, text, x, y, size=12, color=(0,0,0), face="Monospace"):
         self.text = text
