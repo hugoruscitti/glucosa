@@ -30,12 +30,12 @@ def load_surface(path):
     # TODO: no asumir que siempre que cargan PNGs.
     return cairo.ImageSurface.create_from_png(path)
 
-def render_text(context, x, y, text, color, size):
+def render_text(context, x, y, text, color, size, face):
     """Dibuja una cadena de texto sobre el contexto de canvas."""
 
     context.set_source_rgba(*color)
 
-    context.select_font_face("Monospace",
+    context.select_font_face(face,
                 cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
 
     context.set_font_size(size)

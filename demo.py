@@ -159,12 +159,13 @@ class Sprite:
 class Text:
     """ Muestra un texto en la pantalla """
     
-    def __init__(self, text, x, y, size=12, color=(0,0,0)):
+    def __init__(self, text, x, y, size=12, color=(0,0,0), face="Monospace"):
         self.text = text
         self.x = x
         self.y = y
         self.size = size
         self.color = color
+        self.face = face
 
     def draw(self, context):
         
@@ -178,7 +179,8 @@ class Text:
                                                          self.y + dy, 
                                                          line, 
                                                          self.color, 
-                                                         self.size)
+                                                         self.size,
+                                                         self.face)
             dy += text_height
 
     
@@ -195,7 +197,9 @@ class Game:
         #self.actor = Sprite(Image('../clock-cairo/data/terron.png'), 0, 0)
         self.actor_animado = Sprite(Frame('data/moneda.png', 8), 0, 0)
         self.actor_animado.y = 60
-        self.texto = Text("Hola Mundo\nBienvenido a Glucosa!", 5, 150)
+        self.texto = Text("Hola Mundo\nBienvenido a Glucosa!", 5, 150,
+                          face="Arial",
+                          size=18)
 
     def on_update(self):        
         #self.actor.x += 1
