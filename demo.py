@@ -49,20 +49,8 @@ class MainLoop:
         self.widget = widget
         gobject.timeout_add(1000/self.fps, self._update)
         self.widget.connect("expose-event", self._on_draw)
-        self.widget.connect("button-press-event", self._button_press_event)
-        self.widget.connect("button-release-event", self._button_press_event)
-        self.widget.connect("key-press-event", self._key_press_event)
-        self.widget.connect("key-release-event", self._key_press_event)
-
-
-    def _key_press_event(self, widget, event):
-        print event
-        return True
-
-    def _button_press_event(self, widget, event):
-        print event
-        return True
-
+        
+        
     def _update(self):
         self.controller.on_update()
         gobject.idle_add(self.widget.queue_draw)
@@ -84,19 +72,39 @@ class Game:
     def __init__(self):
         self.window = create_window()
         self.mainloop = MainLoop(self, self.window, fps=60)
-        #self.actor = Sprite(Image('../clock-cairo/data/terron.png'), 0, 0)
+        
+        self.actores = []
+        
         self.actor_animado = glucosa.Sprite(glucosa.Frame('data/moneda.png', 8), 0, 0)
         self.actor_animado.y = 60
-        self.texto = glucosa.Text("Hola Mundo\nBienvenido a Glucosa!", 5, 150,
+        self.texto = glucosa.Text("Hola Mundo:\n", 5, 150,
                           face="Arial",
-                          size=18)
+                          size=18)        
+
+        self.events = glucosa.Events(self.window)
+        
+        self.events.connect(glucosa.EVENT_MOUSE_BUTTON_PRESSED, 
+                            self.boton_mouse_presionado)
+        
+        self.events.connect(glucosa.EVENT_KEY_PRESSED, 
+                            self.tecla_pulsada)
+
+    def boton_mouse_presionado(self, event):
+        self.crear_actor(event['x'], event['y'])
+        
+    def tecla_pulsada(self, event):
+        print event
+
+    def crear_actor(self, x , y):
+        self.actores.append(glucosa.Sprite(glucosa.Image('data/aceituna.png'), x, y))
 
     def on_update(self):
-        #self.actor.x += 1
         self.actor_animado.update()
 
     def on_draw(self, context):
-        #self.actor.draw(context)
+        for actor in self.actores:
+            actor.draw(context)
+        
         self.actor_animado.draw(context)
         self.texto.draw(context)
 
