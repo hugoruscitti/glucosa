@@ -21,7 +21,8 @@ def create_window():
     canvas.set_events(  gtk.gdk.BUTTON_PRESS_MASK
                       | gtk.gdk.BUTTON_RELEASE_MASK
                       | gtk.gdk.KEY_RELEASE_MASK
-                      | gtk.gdk.KEY_PRESS_MASK)
+                      | gtk.gdk.KEY_PRESS_MASK
+                      | gtk.gdk.POINTER_MOTION_MASK)
 
     # Perimitmos que el DrawingArea tenga el foco para pdoer capturar los
     # eventos del teclado.
@@ -81,18 +82,20 @@ class Game:
                           size=18)
 
         self.events = glucosa.Events(self.window)
+        print self.events.__events__
 
-        self.events.connect(glucosa.EVENT_MOUSE_BUTTON_PRESSED,
-                            self.boton_mouse_presionado)
+        self.events.on_mouse_move += self.raton_movido
+        self.events.on_mouse_button_pressed += self.boton_mouse_presionado
+        self.events.on_key_pressed += self.tecla_pulsada
+        
+    def raton_movido(self, evento):
+        pass
 
-        self.events.connect(glucosa.EVENT_KEY_PRESSED,
-                            self.tecla_pulsada)
+    def boton_mouse_presionado(self, evento):
+        self.crear_actor(evento['x'], evento['y'])
 
-    def boton_mouse_presionado(self, event):
-        self.crear_actor(event['x'], event['y'])
-
-    def tecla_pulsada(self, event):
-        print event
+    def tecla_pulsada(self, evento):
+        print evento
 
     def crear_actor(self, x , y):
         self.actores.append(glucosa.Sprite(glucosa.Image('data/aceituna.png'), x, y))

@@ -8,7 +8,7 @@ def fill(context, color, size):
     context.rectangle(0, 0, size[0], size[1])
     context.fill()
 
-def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_height=None):
+def blit_surface(context, surface, x, y, src_x = 0, src_y = 0, src_width = None, src_height = None):
     """Dibuja una superficie sobre un contexto de canvas."""
     if not src_width:
         src_width = surface.get_width()
@@ -17,7 +17,7 @@ def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_h
         src_height = surface.get_height()
 
 
-    context.set_source_surface(surface, x-src_x, y-src_y)
+    context.set_source_surface(surface, x - src_x, y - src_y)
     context.rectangle(x, y, src_width, src_height)
     context.fill()
 
@@ -25,7 +25,7 @@ def load_surface(path):
     """Genera una superficie a partir de un archivo .png"""
 
     if not os.path.exists(path):
-        raise Exception("File not found: %s" %(path))
+        raise Exception("File not found: %s" % (path))
 
     # TODO: no asumir que siempre que cargan PNGs.
     return cairo.ImageSurface.create_from_png(path)
@@ -60,7 +60,7 @@ class Image:
 class Frame(Image):
     """Representa un cuadro de animación, realizado dividiendo una imagen."""
 
-    def __init__(self, path, cols, rows=1):
+    def __init__(self, path, cols, rows = 1):
         Image.__init__(self, path)
         self.cols = cols
         self.rows = rows
@@ -147,7 +147,7 @@ class Text:
 
     """
 
-    def __init__(self, text, x, y, size=12, color=(0,0,0), face="Monospace"):
+    def __init__(self, text, x, y, size = 12, color = (0, 0, 0), face = "Monospace"):
         self.text = text
         self.x = x
         self.y = y
@@ -180,142 +180,104 @@ class Singleton(type):
     def __call__(self, *args, **kw):
         if self.instance is None:
             self.instance = super(Singleton, self).__call__(*args, **kw)
-        return self.instance            
+        return self.instance
 
-# Creamos las constantes de los posibles eventos.
-EVENT_MOUSE_MOVE = "motion-notify-event"
-EVENT_MOUSE_BUTTON_PRESSED = "button-press-event"
-EVENT_MOUSE_BUTTON_RELEASED = "button-release-event"
-EVENT_KEY_PRESSED = "key-press-event"
-EVENT_KEY_RELEASED = "key-release-event"
 
-class Events(object):
+class _EventsManager:
+    
+    __events__ = ('on_mouse_move',
+                  'on_mouse_button_pressed',
+                  'on_mouse_button_released',
+                  'on_key_pressed',
+                  'on_key_released' )
+    
+    def __getattr__(self, name):
+        if hasattr(self.__class__, '__events__'):
+            assert name in self.__class__.__events__, \
+            "Event '%s' is not declared" % name
+        self.__dict__[name] = ev = _EventSlot(name)
+        return ev
+    
+    def __repr__(self): return 'Events' + str(list(self))
+   
+    __str__ = __repr__
+   
+    def __len__(self): return NotImplemented
+   
+    def __iter__(self):
+        def gen(dictitems = self.__dict__.items()):
+            for attr, val in dictitems:
+                if isinstance(val, _EventSlot):
+                    yield val
+        return gen()
+
+class _EventSlot:
+    
+    def __init__(self, name):
+        self.targets = []
+        self.__name__ = name
+        
+    def __repr__(self):
+        return 'event ' + self.__name__
+    
+    def __call__(self, *a, **kw):
+        for f in self.targets: f(*a, **kw)
+    
+    def __iadd__(self, f):
+        self.targets.append(f)
+        return self
+    
+    def __isub__(self, f):
+        while f in self.targets: self.targets.remove(f)
+        return self
+
+class Events(_EventsManager, object):
     
     __metaclass__ = Singleton
     
     def __init__(self, widget):
         
-        self._event_manager = _EventManager()
-        self._event_manager.add_event(_Event(EVENT_MOUSE_MOVE))
-        self._event_manager.add_event(_Event(EVENT_MOUSE_BUTTON_PRESSED))
-        self._event_manager.add_event(_Event(EVENT_MOUSE_BUTTON_RELEASED))
-        self._event_manager.add_event(_Event(EVENT_KEY_PRESSED))
-        self._event_manager.add_event(_Event(EVENT_KEY_RELEASED))
-
-        
         self._widget = widget
-        self._widget.connect(EVENT_MOUSE_MOVE, 
+        self._widget.connect('motion-notify-event', 
                              self._mouse_move)
-        self._widget.connect(EVENT_MOUSE_BUTTON_PRESSED, 
+        self._widget.connect('button-press-event', 
                              self._mouse_button_press)
-        self._widget.connect(EVENT_MOUSE_BUTTON_RELEASED, 
+        self._widget.connect('button-release-event', 
                              self._mouse_button_released)
-        self._widget.connect(EVENT_KEY_PRESSED, 
+        self._widget.connect('key-press-event', 
                              self._key_pressed)
-        self._widget.connect(EVENT_KEY_RELEASED, 
+        self._widget.connect('key-release-event', 
                              self._key_released)
-   
+    
+    
     def _mouse_move(self, widget, event):
-        
-        mouse_event = {'event' : {'button' : event.button,
-                      'x' : event.x,
+        mouse_event = {'x' : event.x,
                       'y' : event.y}
-                      }
-        
-        self._event_manager.signal(EVENT_MOUSE_MOVE, mouse_event)
-        
+        self.on_mouse_move(mouse_event)
         return True
     
     def _mouse_button_press(self, widget, event):
-        
-        mouse_event = {'event' : {'button' : event.button,
+        print event
+        mouse_event = {'button' : event.button,
                       'x' : event.x,
                       'y' : event.y}
-                      }
-        
-        self._event_manager.signal(EVENT_MOUSE_BUTTON_PRESSED, mouse_event)
-        
+        self.on_mouse_button_pressed(mouse_event)
         return True
-    
+
     def _mouse_button_released(self, widget, event):
-        
-        mouse_event = {'event' : {'button' : event.button,
+        mouse_event = {'button' : event.button,
                       'x' : event.x,
                       'y' : event.y}
-                      }
-        
-        self._event_manager.signal(EVENT_MOUSE_BUTTON_RELEASED, mouse_event)
-        
+        self.on_mouse_button_released(mouse_event)
         return True
     
     def _key_pressed(self, widget, event):
-        key_event = {'event' : {'key' : event.keyval }}
-        
-        self._event_manager.signal(EVENT_KEY_PRESSED, key_event)
-        
+        key_event = {'key' : event.keyval }
+        self.on_key_pressed(key_event)
         return True
     
     def _key_released(self, widget, event):
-        key_event = {'event' : {'key' : event.keyval }}
-        
-        self._event_manager.signal(EVENT_KEY_RELEASED, key_event)
-        
+        key_event = {'key' : event.keyval }
+        self.on_key_released(key_event)
         return True
-    
-        
-    def connect(self, event, function):
-        self._event_manager.connect(event, function)
 
-class _Event():
-    def __init__(self, name):
-        self.name = name
-        self.listeners = {}
-
-    def add(self, function, data=None):
-        self.listeners[function] = data
-    
-    def delete(self, function):
-        self.listeners.pop(function)
-
-    def called(self, data=None):
-        for function, d in self.listeners.items():
-            if data is None:
-                if d is None:
-                    function()
-                else:
-                    if type(d) == type([]):
-                        function(*d)
-                    elif type(d) == type({}):
-                        function(**d)
-                    else:
-                        function(d)
-            else:
-                if type(data) == type([]):
-                    function(*data)
-                elif type(data) == type({}):
-                    function(**data)
-                else:
-                    function(data)
-                    
-class _EventManager():    
-    def __init__(self):
-        self.events = {}
-
-    def add_event(self, Event):
-        self.events[Event.name] = Event
-
-    def del_event(self, Event):
-        self.events.pop(Event.name)
-
-    def connect(self, event, function, data=None):
-        self.events[event].add(function, data)
-
-    def disconnect(self, event, function):
-        self.events[event].delete(function)
-
-    def signal(self, event, data=None):
-        if data is None:
-            self.events[event].called()
-        else:
-            self.events[event].called(data)
-            
