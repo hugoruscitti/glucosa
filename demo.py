@@ -95,7 +95,7 @@ class Game:
         self.crear_actor(evento['x'], evento['y'])
 
     def tecla_pulsada(self, evento):
-        print evento
+        print gtk.gdk.keyval_name(evento['key'])
 
     def crear_actor(self, x , y):
         self.actores.append(glucosa.Sprite(glucosa.Image('data/aceituna.png'), x, y))
