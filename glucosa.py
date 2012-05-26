@@ -173,6 +173,9 @@ class Text:
 
 
 class Singleton(type):
+    """ Clase para garantizar que una clase sólo tenga una instancia y 
+    proporcionar un punto de acceso global a ella.
+    """
     def __init__(cls, name, bases, dic):
         super(Singleton, cls).__init__(name, bases, dic)
         cls.instance = None
@@ -185,6 +188,7 @@ class Singleton(type):
 
 class _EventsManager:
     
+    # Listado de eventos a capturar.
     __events__ = ('on_mouse_move',
                   'on_mouse_button_pressed',
                   'on_mouse_button_released',
@@ -212,6 +216,8 @@ class _EventsManager:
         return gen()
 
 class _EventSlot:
+    """ Evento generico al que se agregan observadores para ser informados
+    de cuando se ha producido dicho evento. """
     
     def __init__(self, name):
         self.targets = []
@@ -232,12 +238,24 @@ class _EventSlot:
         return self
 
 class Events(_EventsManager, object):
+    """ Gestor de los posibles eventos que se producen en glucosa. 
     
+    >>> def boton_mouse_presionado(self, evento):
+    >>>     print evento
+    >>>
+    >>> eventos = glucosa.Events(self.window) 
+    >>> eventos.on_mouse_button_pressed += self.boton_mouse_presionado
+    
+    """
+    
+    # Solo puede existir una instancia de este objeto en el programa.
     __metaclass__ = Singleton
     
     def __init__(self, widget):
         
         self._widget = widget
+        
+        # Conectamos los eventos de GTK.
         self._widget.connect('motion-notify-event', 
                              self._mouse_move)
         self._widget.connect('button-press-event', 
