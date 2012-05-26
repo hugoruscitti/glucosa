@@ -87,7 +87,10 @@ class Game:
         self.events.on_mouse_move += self.raton_movido
         self.events.on_mouse_button_pressed += self.boton_mouse_presionado
         self.events.on_key_pressed += self.tecla_pulsada
-        
+
+        self.sound = glucosa.Sound("file://data/jump.wav")
+        self.sound.play()
+
     def raton_movido(self, evento):
         pass
 

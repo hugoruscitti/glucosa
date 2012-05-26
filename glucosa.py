@@ -1,6 +1,10 @@
 # -*- encoding: utf-8 -*-
 import cairo
 import os
+import pygst
+pygst.require("0.10")
+import gst, gtk
+
 
 def fill(context, color, size):
     """Pinta un contexto con un color y tamaño determinado."""
@@ -301,11 +305,18 @@ class Events(_EventsManager, object):
 
 
 class Sound:
+    """A sound that can be played one, or more times.
+
+        >>> s = Sound("file://data/sound.wav")
+        >>> s.play()
+    """
 
     def __init__(self, path):
-        self.path
+        "Creates a new sound instance, ``path`` must be a string with route to wav file."
+        self.path = path
+        self.player = gst.element_factory_make("playbin2", "player")
+        self.player.set_property("uri", path)
 
     def play(self):
-        pass
-
-
+        "Plays the sound."
+        self.player.set_state(gst.STATE_PLAYING)
