@@ -23,6 +23,9 @@ sys.path.insert(0, os.path.abspath('..'))
 sys.path.insert(0, os.path.abspath('.'))
 
 import cairo
+import gtk
+import pygst
+import gst
 
 # -- General configuration -----------------------------------------------------
 
