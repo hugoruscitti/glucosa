@@ -320,3 +320,32 @@ class Sound:
     def play(self):
         "Plays the sound."
         self.player.set_state(gst.STATE_PLAYING)
+
+class Pencil:
+
+    def __init__(self, color=(0, 0, 0), width=1):
+        self.color = color
+        self.width = width
+
+    def draw_line(self, context, org_x, org_y, dest_x, dest_y, width=1):
+
+        context.set_source_rgba(*self.color)
+
+        context.move_to(org_x, org_y)
+        context.line_to(dest_x, dest_y)
+
+        context.set_line_width(self.width)
+
+        context.stroke()
+        
+    def draw_circle (self, context, center_x, center_y, radius):
+        self.draw_arc(context, center_x, center_y, radius, 0, 360)
+        
+    def draw_arc(self, context, center_x, center_y, radius, angle_1, angle_2):
+
+        context.set_line_width(self.width)
+
+        context.arc(center_x, center_y, radius, angle_1 * (math.pi / 180),
+                    angle_2 * (math.pi / 180))
+
+        context.stroke()
