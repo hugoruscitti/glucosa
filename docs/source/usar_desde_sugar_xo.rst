@@ -19,15 +19,26 @@ y luego abre la consola:
 
 .. image:: images/open_console.png
 
-Ahí, tienes que escribir los siguientes
-comandos::
+Ahí, tienes que escribir algunos comandos para
+obtener todo el código de glucosa.
 
-    cd
+Si tienes ``git`` instalado, el comando para descargar
+glucosa es el siguiente::
+
     git clone git://github.com/hugoruscitti/glucosa.git
+
+En caso contrario, utiliza el siguiente comando::
+
+    wget https://github.com/hugoruscitti/glucosa/tarball/master
+    tar xvzf master
+
+Y luego, de cualquiera de las dos formas, solo tienes que ingresar
+en el directorio creado y ejecutar el script demostración::
+
     cd glucosa
     python demo.py
 
-Y en la pantalla aparecerá un pequeño ejemplo indicado
+En la pantalla aparecerá un pequeño ejemplo indicado
 que todo a funcionado bien:
 
 .. image:: images/resultado.png
