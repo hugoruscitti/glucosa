@@ -380,15 +380,10 @@ class Pencil:
 
         context.move_to(src_x, src_y)
         context.line_to(dest_x, src_y)
-        
-        context.move_to(dest_x, src_y)
         context.line_to(dest_x, dest_y)
-        
-        context.move_to(dest_x, dest_y)
         context.line_to(src_x, dest_y)
         
-        context.move_to(src_x, dest_y)
-        context.line_to(src_x, src_y)
+        context.close_path()
 
         context.stroke()
         
