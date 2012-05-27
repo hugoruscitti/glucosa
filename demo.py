@@ -88,8 +88,10 @@ class Game:
         self.events.on_mouse_button_pressed += self.boton_mouse_presionado
         self.events.on_key_pressed += self.tecla_pulsada
 
-        self.sound = glucosa.Sound("file://data/jump.wav")
+        self.sound = glucosa.Sound("data/jump.wav")
         self.sound.play()
+        
+        self.lapiz = glucosa.Pencil()
 
     def raton_movido(self, evento):
         pass
@@ -112,6 +114,10 @@ class Game:
 
         self.actor_animado.draw(context)
         self.texto.draw(context)
+        self.lapiz.draw_line(context, 10, 10, 100, 100, 1)
+        self.lapiz.draw_circle(context, 100, 100, 60)
+        self.lapiz.draw_arc(context, 100, 120, 60, 0, 180)
+        self.lapiz.draw_box(context, 20, 20, 60, 90, 3)
 
 if __name__ == '__main__':
     juego = Game()
