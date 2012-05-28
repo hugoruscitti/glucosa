@@ -51,6 +51,18 @@ def render_text(context, x, y, text, color, size, face):
 
     return context.text_extents(text)[2:4]
 
+def get_absolute_uri(relative_path):
+    """Creates a uri string from a relative path.
+
+    Example:
+
+        >>> get_absolute_uri("data/my_image.png")
+        file:///media/disk/glucosa/data/my_image.png
+
+    """
+    absolute_path = os.path.abspath(relative_path)
+    return "file://%s" %(absolute_path)
+
 # Sume object oriented stuff
 
 class Image:
@@ -316,7 +328,7 @@ class Sound:
         "Creates a new sound instance, ``path`` must be a string with route to wav file."
         self.path = path
         self.player = gst.element_factory_make("playbin2", "player")
-        self.player.set_property("uri", path)
+        self.player.set_property("uri", get_absolute_uri(path))
 
         self.bus = self.player.get_bus()
         self.bus.add_signal_watch()

@@ -12,7 +12,6 @@ import glucosa
 
 def create_window():
     window = gtk.Window()
-    gobject.threads_init()
     window.connect('destroy', gtk.main_quit)
     canvas = gtk.DrawingArea()
 
@@ -89,7 +88,7 @@ class Game:
         self.events.on_mouse_button_pressed += self.boton_mouse_presionado
         self.events.on_key_pressed += self.tecla_pulsada
 
-        self.sound = glucosa.Sound("file:///media/sf_shared/proyectos/glucosa.git/data/jump.wav")
+        self.sound = glucosa.Sound("data/jump.wav")
         self.sound.play()
 
         self.lapiz = glucosa.Pencil()
