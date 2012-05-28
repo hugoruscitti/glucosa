@@ -5,6 +5,7 @@ import pygst
 pygst.require("0.10")
 import gst, gtk
 import math
+import gobject
 
 def fill(context, color, size):
     """Pinta un contexto con un color y tamaño determinado."""
@@ -317,21 +318,36 @@ class Sound:
         self.player = gst.element_factory_make("playbin2", "player")
         self.player.set_property("uri", path)
 
+        self.bus = self.player.get_bus()
+        self.bus.add_signal_watch()
+        self.bus.connect("message", self.on_message)
+
     def play(self):
         "Plays the sound."
         self.player.set_state(gst.STATE_PLAYING)
+
+    def on_message(self, bus, message):
+        t = message.type
+        if t == gst.MESSAGE_EOS:
+            self.player.set_state(gst.STATE_NULL)
+            self.playmode = False
+        elif t == gst.MESSAGE_ERROR:
+            self.player.set_state(gst.STATE_NULL)
+            err, debug = message.parse_error()
+            print "Error: %s" % err, debug
+            self.playmode = False
 
 class Pencil:
 
     def __init__(self, color=(0, 0, 0)):
         self.color = color
-        
+
     def draw_line(self, context, src_x, src_y, dest_x, dest_y, width=1):
         """ Dibuja una linea recta en pantalla.
 
         >>> self.lapiz = glucosa.Pencil()
-        >>> self.lapiz.draw_line(context, 10, 10, 100, 100, 1) 
-        
+        >>> self.lapiz.draw_line(context, 10, 10, 100, 100, 1)
+
         """
 
         context.set_source_rgba(*self.color)
@@ -342,26 +358,26 @@ class Pencil:
         context.set_line_width(width)
 
         context.stroke()
-        
+
     def draw_circle (self, context, center_x, center_y, radius, width=1):
-        """ Dibuja un circulo en pantalla 
-        
+        """ Dibuja un circulo en pantalla
+
         >>> self.lapiz = glucosa.Pencil()
-        >>> self.lapiz.draw_circle(context, 100, 100, 60) 
+        >>> self.lapiz.draw_circle(context, 100, 100, 60)
 
         """
         self.draw_arc(context, center_x, center_y, radius, 0, 360)
-        
+
     def draw_arc(self, context, center_x, center_y, radius, angle_1, angle_2,
                  width=1):
-        """ Dibuja un arco en pantalla. Los angulos crecen en el sentido de 
+        """ Dibuja un arco en pantalla. Los angulos crecen en el sentido de
         las agujas del reloj.
 
         >>> self.lapiz = glucosa.Pencil()
-        >>> self.lapiz.draw_arc(context, 100, 120, 60, 0, 180) 
+        >>> self.lapiz.draw_arc(context, 100, 120, 60, 0, 180)
 
         """
-        
+
         context.set_source_rgba(*self.color)
 
         context.set_line_width(width)
@@ -373,17 +389,17 @@ class Pencil:
 
     def draw_box (self, context, src_x, src_y, dest_x, dest_y, width=1):
         """ Dibuja una caja en pantalla. """
-        
+
         context.set_source_rgba(*self.color)
-        
+
         context.set_line_width(width)
 
         context.move_to(src_x, src_y)
         context.line_to(dest_x, src_y)
         context.line_to(dest_x, dest_y)
         context.line_to(src_x, dest_y)
-        
+
         context.close_path()
 
         context.stroke()
-        
+
