@@ -117,7 +117,7 @@ class Game:
         self.lapiz.draw_line(context, 10, 10, 100, 100, 1)
         self.lapiz.draw_circle(context, 100, 100, 60)
         self.lapiz.draw_arc(context, 100, 120, 60, 0, 180)
-        self.lapiz.draw_box(context, 20, 20, 60, 90, 3)
+        self.lapiz.draw_box(context, 20, 20, 150, 30, 1, (255,0,56))
 
 if __name__ == '__main__':
     juego = Game()

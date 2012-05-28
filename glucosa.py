@@ -399,7 +399,8 @@ class Pencil:
 
         context.stroke()
 
-    def draw_box (self, context, x, y, width, height, line_width=1):
+    def draw_box (self, context, x, y, width, height, line_width=1,
+                  fill_color=None):
         """ Dibuja una caja en pantalla. """
         
         context.set_source_rgba(*self.color)
@@ -410,8 +411,13 @@ class Pencil:
         context.line_to(x + width, y)
         context.line_to(x + width, y + height)
         context.line_to(x, y + height)
-
+        
         context.close_path()
+        
+        if (fill_color != None):
+            context.set_source_rgba(*fill_color)
+            context.fill_preserve()
+            context.set_source_rgba(*self.color)
 
         context.stroke()
 
