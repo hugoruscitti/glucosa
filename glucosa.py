@@ -354,7 +354,7 @@ class Pencil:
     def __init__(self, color=(0, 0, 0)):
         self.color = color
 
-    def draw_line(self, context, src_x, src_y, dest_x, dest_y, width=1):
+    def draw_line(self, context, src_x, src_y, dest_x, dest_y, line_width=1):
         """ Dibuja una linea recta en pantalla.
 
         >>> self.lapiz = glucosa.Pencil()
@@ -367,21 +367,21 @@ class Pencil:
         context.move_to(src_x, src_y)
         context.line_to(dest_x, dest_y)
 
-        context.set_line_width(width)
+        context.set_line_width(line_width)
 
         context.stroke()
 
-    def draw_circle (self, context, center_x, center_y, radius, width=1):
+    def draw_circle (self, context, center_x, center_y, radius, line_width=1):
         """ Dibuja un circulo en pantalla
 
         >>> self.lapiz = glucosa.Pencil()
         >>> self.lapiz.draw_circle(context, 100, 100, 60)
 
         """
-        self.draw_arc(context, center_x, center_y, radius, 0, 360)
+        self.draw_arc(context, center_x, center_y, radius, 0, 360, line_width)
 
     def draw_arc(self, context, center_x, center_y, radius, angle_1, angle_2,
-                 width=1):
+                 line_width=1):
         """ Dibuja un arco en pantalla. Los angulos crecen en el sentido de
         las agujas del reloj.
 
@@ -392,24 +392,24 @@ class Pencil:
 
         context.set_source_rgba(*self.color)
 
-        context.set_line_width(width)
+        context.set_line_width(line_width)
 
         context.arc(center_x, center_y, radius, angle_1 * (math.pi / 180),
                     angle_2 * (math.pi / 180))
 
         context.stroke()
 
-    def draw_box (self, context, src_x, src_y, dest_x, dest_y, width=1):
+    def draw_box (self, context, x, y, width, height, line_width=1):
         """ Dibuja una caja en pantalla. """
-
+        
         context.set_source_rgba(*self.color)
 
-        context.set_line_width(width)
+        context.set_line_width(line_width)
 
-        context.move_to(src_x, src_y)
-        context.line_to(dest_x, src_y)
-        context.line_to(dest_x, dest_y)
-        context.line_to(src_x, dest_y)
+        context.move_to(x, y)
+        context.line_to(x + width, y)
+        context.line_to(x + width, y + height)
+        context.line_to(x, y + height)
 
         context.close_path()
 
