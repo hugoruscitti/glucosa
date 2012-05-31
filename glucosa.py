@@ -6,6 +6,8 @@ pygst.require("0.10")
 import gst, gtk
 import math
 import gobject
+import pygtk
+import gtk
 
 def fill(context, color, size):
     """Pinta un contexto con un color y tamaño determinado."""
@@ -20,7 +22,6 @@ def blit_surface(context, surface, x, y, src_x = 0, src_y = 0, src_width = None,
 
     if not src_height:
         src_height = surface.get_height()
-
 
     context.set_source_surface(surface, x - src_x, y - src_y)
     context.rectangle(x, y, src_width, src_height)
@@ -62,6 +63,38 @@ def get_absolute_uri(relative_path):
     """
     absolute_path = os.path.abspath(relative_path)
     return "file://%s" %(absolute_path)
+
+def create_window():
+    """Genera una ventana con un elemento DrawingArea dentro.
+
+    Esta función se utiliza para simplificar pruebas rápidas y
+    la construcción de ejemplos sencillos. No es una función muy
+    sofisticada, solo es un helper.
+
+    El objeto retornado por esta función es una tupla con dos
+    elementos, la ventana creada y el DrawingArea.
+    """
+    window = gtk.Window()
+    window.connect('destroy', gtk.main_quit)
+    canvas = gtk.DrawingArea()
+
+    # Añadimos lo eventos que queremos capturar.
+    # Esta operación se debe hacer previamente a añadir el DrawingArea a
+    # la ventana.
+    canvas.set_events(  gtk.gdk.BUTTON_PRESS_MASK
+                      | gtk.gdk.BUTTON_RELEASE_MASK
+                      | gtk.gdk.KEY_RELEASE_MASK
+                      | gtk.gdk.KEY_PRESS_MASK
+                      | gtk.gdk.POINTER_MOTION_MASK)
+
+    # Perimitmos que el DrawingArea tenga el foco para poder capturar los
+    # eventos del teclado.
+    canvas.set_flags (gtk.CAN_FOCUS)
+
+    window.add(canvas)
+    window.show_all()
+
+    return (window, canvas)
 
 # Sume object oriented stuff
 
@@ -140,15 +173,25 @@ class Sprite:
 
     .. image:: ../../data/aceituna.png
 
+    Cada Sprite tiene atributos para representar el estado de dibujado, alguno
+    de estos atributos son:
+
+    - x: posición horizontal.
+    - y: posición vertical.
+    - anchor_x: punto de control horizontal.
+    - anchor_y: punto de control vertical.
+
     """
 
-    def __init__(self, image, x, y):
+    def __init__(self, image, x, y, anchor_x=0, anchor_y=0):
         self.image = image
         self.x = x
         self.y = y
+        self.anchor_x = anchor_x
+        self.anchor_y = anchor_y
 
     def draw(self, context):
-        self.image.blit(context, self.x, self.y)
+        self.image.blit(context, self.x - self.anchor_x, self.y - self.anchor_y)
 
     def update(self):
         if (self.image.__class__.__name__ == "Frame"):
@@ -284,7 +327,6 @@ class Events(_EventsManager, object):
         self._widget.connect('key-release-event',
                              self._key_released)
 
-
     def _mouse_move(self, widget, event):
         mouse_event = {'x' : event.x,
                       'y' : event.y}
@@ -402,7 +444,7 @@ class Pencil:
     def draw_box (self, context, x, y, width, height, line_width=1,
                   fill_color=None):
         """ Dibuja una caja en pantalla. """
-        
+
         context.set_source_rgba(*self.color)
 
         context.set_line_width(line_width)
@@ -411,13 +453,12 @@ class Pencil:
         context.line_to(x + width, y)
         context.line_to(x + width, y + height)
         context.line_to(x, y + height)
-        
+
         context.close_path()
-        
+
         if (fill_color != None):
             context.set_source_rgba(*fill_color)
             context.fill_preserve()
             context.set_source_rgba(*self.color)
 
         context.stroke()
-
