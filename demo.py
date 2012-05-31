@@ -10,28 +10,6 @@ import gobject
 import glucosa
 
 
-def create_window():
-    window = gtk.Window()
-    window.connect('destroy', gtk.main_quit)
-    canvas = gtk.DrawingArea()
-
-    # Añadimos lo eventos que queremos capturar.
-    # Esta operación se debe hacer previamente a añadir el DrawingArea a
-    # la ventana.
-    canvas.set_events(  gtk.gdk.BUTTON_PRESS_MASK
-                      | gtk.gdk.BUTTON_RELEASE_MASK
-                      | gtk.gdk.KEY_RELEASE_MASK
-                      | gtk.gdk.KEY_PRESS_MASK
-                      | gtk.gdk.POINTER_MOTION_MASK)
-
-    # Perimitmos que el DrawingArea tenga el foco para pdoer capturar los
-    # eventos del teclado.
-    canvas.set_flags (gtk.CAN_FOCUS)
-
-    window.add(canvas)
-    window.show_all()
-
-    return canvas
 
 class MainLoop:
     """Representa el bucle principal de un juego.
@@ -70,8 +48,8 @@ class Game:
     llamado tantas veces como sea posible."""
 
     def __init__(self):
-        self.window = create_window()
-        self.mainloop = MainLoop(self, self.window, fps=60)
+        (self.window, self.canvas) = glucosa.create_window()
+        self.mainloop = MainLoop(self, self.canvas, fps=60)
 
         self.actores = []
 
@@ -81,13 +59,13 @@ class Game:
                           face="Arial",
                           size=18)
 
-        self.events = glucosa.Events(self.window)
+        self.events = glucosa.Events(self.canvas)
         print self.events.__events__
 
         self.events.on_mouse_move += self.raton_movido
         self.events.on_mouse_button_pressed += self.boton_mouse_presionado
         self.events.on_key_pressed += self.tecla_pulsada
-        
+
     def raton_movido(self, evento):
         pass
 

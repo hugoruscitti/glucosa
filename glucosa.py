@@ -1,6 +1,8 @@
 # -*- encoding: utf-8 -*-
 import cairo
 import os
+import pygtk
+import gtk
 
 def fill(context, color, size):
     """Pinta un contexto con un color y tamaño determinado."""
@@ -45,6 +47,38 @@ def render_text(context, x, y, text, color, size, face):
     context.show_text(text)
 
     return context.text_extents(text)[2:4]
+
+def create_window():
+    """Genera una ventana con un elemento DrawingArea dentro.
+
+    Esta función se utiliza para simplificar pruebas rápidas y
+    la construcción de ejemplos sencillos. No es una función muy
+    sofisticada, solo es un helper.
+
+    El objeto retornado por esta función es una tupla con dos
+    elementos, la ventana creada y el DrawingArea.
+    """
+    window = gtk.Window()
+    window.connect('destroy', gtk.main_quit)
+    canvas = gtk.DrawingArea()
+
+    # Añadimos lo eventos que queremos capturar.
+    # Esta operación se debe hacer previamente a añadir el DrawingArea a
+    # la ventana.
+    canvas.set_events(  gtk.gdk.BUTTON_PRESS_MASK
+                      | gtk.gdk.BUTTON_RELEASE_MASK
+                      | gtk.gdk.KEY_RELEASE_MASK
+                      | gtk.gdk.KEY_PRESS_MASK
+                      | gtk.gdk.POINTER_MOTION_MASK)
+
+    # Perimitmos que el DrawingArea tenga el foco para poder capturar los
+    # eventos del teclado.
+    canvas.set_flags (gtk.CAN_FOCUS)
+
+    window.add(canvas)
+    window.show_all()
+
+    return (window, canvas)
 
 # Sume object oriented stuff
 
@@ -184,26 +218,26 @@ class Singleton(type):
 
 
 class _EventsManager:
-    
+
     __events__ = ('on_mouse_move',
                   'on_mouse_button_pressed',
                   'on_mouse_button_released',
                   'on_key_pressed',
                   'on_key_released' )
-    
+
     def __getattr__(self, name):
         if hasattr(self.__class__, '__events__'):
             assert name in self.__class__.__events__, \
             "Event '%s' is not declared" % name
         self.__dict__[name] = ev = _EventSlot(name)
         return ev
-    
+
     def __repr__(self): return 'Events' + str(list(self))
-   
+
     __str__ = __repr__
-   
+
     def __len__(self): return NotImplemented
-   
+
     def __iter__(self):
         def gen(dictitems = self.__dict__.items()):
             for attr, val in dictitems:
@@ -212,50 +246,50 @@ class _EventsManager:
         return gen()
 
 class _EventSlot:
-    
+
     def __init__(self, name):
         self.targets = []
         self.__name__ = name
-        
+
     def __repr__(self):
         return 'event ' + self.__name__
-    
+
     def __call__(self, *a, **kw):
         for f in self.targets: f(*a, **kw)
-    
+
     def __iadd__(self, f):
         self.targets.append(f)
         return self
-    
+
     def __isub__(self, f):
         while f in self.targets: self.targets.remove(f)
         return self
 
 class Events(_EventsManager, object):
-    
+
     __metaclass__ = Singleton
-    
+
     def __init__(self, widget):
-        
+
         self._widget = widget
-        self._widget.connect('motion-notify-event', 
+        self._widget.connect('motion-notify-event',
                              self._mouse_move)
-        self._widget.connect('button-press-event', 
+        self._widget.connect('button-press-event',
                              self._mouse_button_press)
-        self._widget.connect('button-release-event', 
+        self._widget.connect('button-release-event',
                              self._mouse_button_released)
-        self._widget.connect('key-press-event', 
+        self._widget.connect('key-press-event',
                              self._key_pressed)
-        self._widget.connect('key-release-event', 
+        self._widget.connect('key-release-event',
                              self._key_released)
-    
-    
+
+
     def _mouse_move(self, widget, event):
         mouse_event = {'x' : event.x,
                       'y' : event.y}
         self.on_mouse_move(mouse_event)
         return True
-    
+
     def _mouse_button_press(self, widget, event):
         print event
         mouse_event = {'button' : event.button,
@@ -270,12 +304,12 @@ class Events(_EventsManager, object):
                       'y' : event.y}
         self.on_mouse_button_released(mouse_event)
         return True
-    
+
     def _key_pressed(self, widget, event):
         key_event = {'key' : event.keyval }
         self.on_key_pressed(key_event)
         return True
-    
+
     def _key_released(self, widget, event):
         key_event = {'key' : event.keyval }
         self.on_key_released(key_event)
