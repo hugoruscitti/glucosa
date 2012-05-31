@@ -163,7 +163,6 @@ class Frame(Image):
 
         return False
 
-
 class Sprite:
     """Representa a un personaje con apariencia de imagen o animación.
 
@@ -176,10 +175,10 @@ class Sprite:
     Cada Sprite tiene atributos para representar el estado de dibujado, alguno
     de estos atributos son:
 
-    x -- posición horizontal.
-    y -- posición vertical.
-    anchor_x -- punto de control horizontal.
-    anchor_y -- punto de control vertical.
+    - x -- posición horizontal.
+    - y -- posición vertical.
+    - anchor_x -- punto de control horizontal.
+    - anchor_y -- punto de control vertical.
     """
 
     def __init__(self, image, x, y, anchor_x=0, anchor_y=0):
@@ -229,7 +228,6 @@ class Text:
                                                          self.size,
                                                          self.face)
             dy += text_height
-
 
 class Singleton(type):
     """ Clase para garantizar que una clase sólo tenga una instancia y
@@ -390,7 +388,7 @@ class Sound:
         self.bus.connect("message", self.on_message)
 
     def play(self):
-        "Plays the sound."
+        "Reproduce el sonido."
         self.player.set_state(gst.STATE_PLAYING)
 
     def on_message(self, bus, message):
