@@ -18,7 +18,6 @@ def blit_surface(context, surface, x, y, src_x = 0, src_y = 0, src_width = None,
     if not src_height:
         src_height = surface.get_height()
 
-
     context.set_source_surface(surface, x - src_x, y - src_y)
     context.rectangle(x, y, src_width, src_height)
     context.fill()
@@ -157,15 +156,25 @@ class Sprite:
 
     .. image:: ../../data/aceituna.png
 
+    Cada Sprite tiene atributos para representar el estado de dibujado, alguno
+    de estos atributos son:
+
+    - x: posición horizontal.
+    - y: posición vertical.
+    - anchor_x: punto de control horizontal.
+    - anchor_y: punto de control vertical.
+
     """
 
-    def __init__(self, image, x, y):
+    def __init__(self, image, x, y, anchor_x=0, anchor_y=0):
         self.image = image
         self.x = x
         self.y = y
+        self.anchor_x = anchor_x
+        self.anchor_y = anchor_y
 
     def draw(self, context):
-        self.image.blit(context, self.x, self.y)
+        self.image.blit(context, self.x - self.anchor_x, self.y - self.anchor_y)
 
     def update(self):
         if (self.image.__class__.__name__ == "Frame"):

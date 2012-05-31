@@ -7,9 +7,7 @@ import pygtk
 import gtk
 import cairo
 import gobject
-
 import glucosa
-
 
 
 class MainLoop:
@@ -49,12 +47,12 @@ class Game:
     llamado tantas veces como sea posible."""
 
     def __init__(self):
-        self.window = create_window()
-        self.mainloop = MainLoop(self, self.window, fps=60)
+        (self.window, self.canvas) = glucosa.create_window()
+        self.mainloop = MainLoop(self, self.canvas, fps=60)
 
         image = glucosa.Image('../data/aceituna.png')
-        self.sprite = glucosa.Sprite(image, 0, 0)
-        self.events = glucosa.Events(self.window)
+        self.sprite = glucosa.Sprite(image, 0, 0, 18, 18)
+        self.events = glucosa.Events(self.canvas)
         self.events.on_mouse_move += self.move_sprite
 
     def move_sprite(self, event):
