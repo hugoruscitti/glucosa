@@ -176,11 +176,10 @@ class Sprite:
     Cada Sprite tiene atributos para representar el estado de dibujado, alguno
     de estos atributos son:
 
-    - x: posición horizontal.
-    - y: posición vertical.
-    - anchor_x: punto de control horizontal.
-    - anchor_y: punto de control vertical.
-
+    x -- posición horizontal.
+    y -- posición vertical.
+    anchor_x -- punto de control horizontal.
+    anchor_y -- punto de control vertical.
     """
 
     def __init__(self, image, x, y, anchor_x=0, anchor_y=0):
@@ -237,7 +236,7 @@ class Singleton(type):
     proporcionar un punto de acceso global a ella.
 
     Para que una clase sea Singleton simplemente se tiene que
-    cambiar la metaclase por Singleton. Por ejemplo:
+    cambiar la metaclase por Singleton. Por ejemplo::
 
         class MiClase:
             __metaclass__ = Singleton
