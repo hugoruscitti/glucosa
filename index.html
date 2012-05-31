@@ -17,8 +17,7 @@
       <header>
         <h1>Glucosa</h1>
 
-
-        <p>Una biblioteca para hacer juegos usando cairo y sugar xo</p>
+        <p>Una biblioteca para hacer juegos sobre <strong>sugar xo</strong></p>
         <p class="view"><a href="https://github.com/hugoruscitti/glucosa">Ver el proyecto en GitHub <small>hugoruscitti/glucosa</small></a></p>
         <ul>
           <li><a href="https://github.com/hugoruscitti/glucosa/zipball/master">Descargar <strong>ZIP File</strong></a></li>
@@ -26,64 +25,48 @@
           <li><a href="https://github.com/hugoruscitti/glucosa">Ver en <strong>GitHub</strong></a></li>
         </ul>
       </header>
-      <section>
-        <img src='data/glucosa-logo.png' style='float: right'>
-        <h3>Glucosa, azúcar para crear juegos</h3>
 
-        <p>Glucosa es una biblioteca para hacer videojuegos. Su diseño es tan básico, que
-        cabe completamente en un archivo .py.</p>
+<section>
 
-        <p>El objetivo de Glucosa, es funcionar sobre cairo y gtk para construir
-        juegos muy sencillos para equipos XO (de olpc) y facilitar la transición
-        de pygame a cairo.</p>
+<img src='data/glucosa-logo.png' style='float: right'>
+<h3>Glucosa, azúcar para crear juegos</h3>
 
-<h3>¿Por qué existe glucosa?</h3>
+<p>Glucosa es una biblioteca para hacer videojuegos. Su diseño es tan básico, que
+cabe completamente en un archivo .py</p>
 
-<p>Ok, es cierto, hay un montón de bibliotecas para hacer juegos. Pero
-hay un motivo real para crear otra mas... Actualmente pygame no funciona
-correctamente sobre los equipos XO, es una pena, pero ciertamente
-no integra bien con GTK y el ecosistema de sugar.</p>
-
-<p>La forma favorita de hacer aplicaciones para sugar es usar pygtk junto
-a cairo, para hacer dibujos multimedia.</p>
-
-<p>Pero... aquí el dilema, pygame no funciona bien sobre sugar y cairo es un
-poco difícil de manipular cuando quieres hacer un juego. 
-
-<p>Aquí nace la idea de crear glucosa, ¡Una super extra mini-biblioteca
-orientada a crear juegos sobre cairo y gtk !</p>
+<p>El objetivo de Glucosa, es funcionar sobre <strong>cairo</strong> y <a href='http://www.gtk.org/'>gtk</a> para
+construir juegos muy sencillos para equipos XO (de olpc) y facilitar la transición
+de pygame a cairo.</p>
 
 <h3>¿Una mira rápida?</h3>
 
+<p>Glucosa es super simple, conociendo unas pocas funciones se pueden hacer
+maravillas:
+
 <pre><code>import glucosa
 ...
-# TODO: hacer una funcion init para que la creacion de la ventana
+# TODO: hacer una funcion init para que la creación de la ventana
 # gtk esté dentro de glucosa, o una función llamada demo que haga algo.
 </code></pre>
 
+<p>
+# TODO: Colocar una imagen del ejemplo de arriba.
+
 <h3>Instalación</h3>
 
-<p>En un sistema Ubuntu, necesitas tener instalado pygtk y pycairo para comenzar. Luego,
-tienes que descargar glucosa y un pequeño ejemplo:
+<p>La forma mas sencilla de probar la biblioteca es ejecutar algo así:
 
 <pre><code>wget https://raw.github.com/hugoruscitti/glucosa/master/glucosa.py
 wget https://raw.github.com/hugoruscitti/glucosa/master/demo.py
 </code></pre>
 
-Listo, ya está instalado. Ahora puedes probar nuestro ejemplo:
+<pre><code>python demo.py</code></pre>
 
-<pre><code>python demo.py
-</code></pre>
-
-Otra opción de instalación, es descargarte el repositorio completo y
-explorar el resto de los archivos:
-
-<pre><code>git clone git@github.com:hugoruscitti/glucosa.git</code></pre>
+# TODO: poner una captura del ejemplo.
 
 <h3>Documentación</h3>
 
-<p>La documentación completa del proyecto se encuentra
-en un sitio externo:
+<p>La documentación completa del proyecto la vas a encontrar en el siguiente sitio:
 
 <ul>
     <li><a href='http://readthedocs.org/docs/glucosa/en/latest/'>Ver documentación</a></li>
