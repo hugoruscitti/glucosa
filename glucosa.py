@@ -235,6 +235,20 @@ class Text:
 class Singleton(type):
     """ Clase para garantizar que una clase sólo tenga una instancia y
     proporcionar un punto de acceso global a ella.
+
+    Para que una clase sea Singleton simplemente se tiene que
+    cambiar la metaclase por Singleton. Por ejemplo:
+
+        class MiClase:
+            __metaclass__ = Singleton
+            [...]
+
+    Entonces, la clase tendrá una sola instancia activa:
+
+        >>> a = MiClase()
+        >>> b = MiClase()
+        >>> id(a) == id(b)
+        True
     """
     def __init__(cls, name, bases, dic):
         super(Singleton, cls).__init__(name, bases, dic)
@@ -360,7 +374,7 @@ class Events(_EventsManager, object):
 
 
 class Sound:
-    """A sound that can be played one, or more times.
+    """Un sonido que se puede reproducir una a mas veces.
 
         >>> s = Sound("file://data/sound.wav")
         >>> s.play()
@@ -392,6 +406,12 @@ class Sound:
             self.playmode = False
 
 class Pencil:
+    """Representa un contexto de dibujo donde se pueden dibujar figuras geometricas.
+
+        >>> self.lapiz = glucosa.Pencil()
+        >>> self.lapiz.draw_line(context, 10, 10, 100, 100, 1)
+    """
+
 
     def __init__(self, color=(0, 0, 0)):
         self.color = color
