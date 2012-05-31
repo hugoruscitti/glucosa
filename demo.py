@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 
-import pygtk
 import gtk
-import cairo
 import gobject
 
 import glucosa
