@@ -11,6 +11,7 @@ Contenido:
 .. toctree::
    :maxdepth: 2
 
+   motivacion.rst
    usar_desde_sugar_xo.rst
    api.rst
 
