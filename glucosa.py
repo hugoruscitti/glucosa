@@ -15,7 +15,7 @@ def fill(context, color, size):
     context.rectangle(0, 0, size[0], size[1])
     context.fill()
 
-def blit_surface(context, surface, x, y, src_x = 0, src_y = 0, src_width = None, src_height = None):
+def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_height=None, scale=1, rotation=0):
     """Dibuja una superficie sobre un contexto de canvas."""
     if not src_width:
         src_width = surface.get_width()
@@ -23,8 +23,16 @@ def blit_surface(context, surface, x, y, src_x = 0, src_y = 0, src_width = None,
     if not src_height:
         src_height = surface.get_height()
 
-    context.set_source_surface(surface, x - src_x, y - src_y)
-    context.rectangle(x, y, src_width, src_height)
+    context.translate(x, y)
+
+    if scale != 1:
+        context.scale(scale, scale)
+
+    if rotation:
+        context.rotate(math.radians(rotation))
+
+    context.set_source_surface(surface, - src_x, - src_y)
+    context.rectangle(0, 0, src_width, src_height)
     context.fill()
 
 def load_surface(path):
@@ -104,8 +112,8 @@ class Image:
     def __init__(self, path):
         self.surface = load_surface(path)
 
-    def blit(self, context, x, y):
-        blit_surface(context, self.surface, x, y)
+    def blit(self, context, x, y, scale=1, rotation=0):
+        blit_surface(context, self.surface, x, y, scale=scale, rotation=rotation)
 
 class Frame(Image):
     """Representa un cuadro de animación, realizado dividiendo una imagen."""
@@ -125,13 +133,14 @@ class Frame(Image):
     def set_frame(self, index):
         self.frame_index = index
 
-    def blit(self, context, x, y):
+    def blit(self, context, x, y, scale=1, rotation=0):
         #TODO usar glucosa.blit_surface con parametros para que dibuje
         # solo una parte del tile
         blit_surface(context, self.surface, x, y,
                              self.frame_coordinates[self.frame_index][0],
                              self.frame_coordinates[self.frame_index][1],
-                             self.frame_width, self.frame_height)
+                             self.frame_width, self.frame_height,
+                             scale=scale, rotation=rotation)
 
     def create_frame_coordinates(self):
         """ Calcula las posiciones del cuadro de animación de la Imagen."""
@@ -179,17 +188,21 @@ class Sprite:
     - y -- posición vertical.
     - anchor_x -- punto de control horizontal.
     - anchor_y -- punto de control vertical.
+    - scale -- tamaño del sprite (por ejemplo: 1 es normal, 2 el doble de tamaño...)
+    - rotation -- la rotación en grados.
     """
 
-    def __init__(self, image, x, y, anchor_x=0, anchor_y=0):
+    def __init__(self, image, x, y, anchor_x=0, anchor_y=0, scale=1, rotation=0):
         self.image = image
         self.x = x
         self.y = y
         self.anchor_x = anchor_x
         self.anchor_y = anchor_y
+        self.scale = scale
+        self.rotation = rotation
 
     def draw(self, context):
-        self.image.blit(context, self.x - self.anchor_x, self.y - self.anchor_y)
+        self.image.blit(context, self.x - self.anchor_x, self.y - self.anchor_y, scale=self.scale, rotation=self.rotation)
 
     def update(self):
         if (self.image.__class__.__name__ == "Frame"):
