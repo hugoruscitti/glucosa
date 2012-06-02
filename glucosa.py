@@ -15,7 +15,7 @@ def fill(context, color, size):
     context.rectangle(0, 0, size[0], size[1])
     context.fill()
 
-def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_height=None, scale=1, rotation=0):
+def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_height=None, scale=1, rotation=0, anchor_x=0, anchor_y=0):
     """Dibuja una superficie sobre un contexto de canvas."""
     if not src_width:
         src_width = surface.get_width()
@@ -23,16 +23,14 @@ def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_h
     if not src_height:
         src_height = surface.get_height()
 
-    context.translate(x, y)
-
     if scale != 1:
         context.scale(scale, scale)
 
     if rotation:
         context.rotate(math.radians(rotation))
 
-    context.set_source_surface(surface, - src_x, - src_y)
-    context.rectangle(0, 0, src_width, src_height)
+    context.set_source_surface(surface, x-src_x, y-src_y)
+    context.rectangle(x, y, src_width, src_height)
     context.fill()
 
 def load_surface(path):
@@ -112,8 +110,10 @@ class Image:
     def __init__(self, path):
         self.surface = load_surface(path)
 
-    def blit(self, context, x, y, scale=1, rotation=0):
-        blit_surface(context, self.surface, x, y, scale=scale, rotation=rotation)
+    def blit(self, context, x, y, scale=1, rotation=0, anchor_x=0, anchor_y=0):
+        blit_surface(context, self.surface, x, y,
+                              scale=scale, rotation=rotation,
+                              anchor_x=anchor_x, anchor_y=anchor_y)
 
 class Frame(Image):
     """Representa un cuadro de animación, realizado dividiendo una imagen."""
@@ -133,14 +133,15 @@ class Frame(Image):
     def set_frame(self, index):
         self.frame_index = index
 
-    def blit(self, context, x, y, scale=1, rotation=0):
+    def blit(self, context, x, y, scale=1, rotation=0, anchor_x=0, anchor_y=0):
         #TODO usar glucosa.blit_surface con parametros para que dibuje
         # solo una parte del tile
         blit_surface(context, self.surface, x, y,
                              self.frame_coordinates[self.frame_index][0],
                              self.frame_coordinates[self.frame_index][1],
                              self.frame_width, self.frame_height,
-                             scale=scale, rotation=rotation)
+                             scale=scale, rotation=rotation,
+                             anchor_x=anchor_x, anchor_y=anchor_y)
 
     def create_frame_coordinates(self):
         """ Calcula las posiciones del cuadro de animación de la Imagen."""
