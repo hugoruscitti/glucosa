@@ -17,11 +17,20 @@ def fill(context, color, size):
 
 def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_height=None, scale=1, rotation=0, anchor_x=0, anchor_y=0):
     """Dibuja una superficie sobre un contexto de canvas."""
+    context.save()
+
     if not src_width:
         src_width = surface.get_width()
 
     if not src_height:
         src_height = surface.get_height()
+
+    context.save() # desplazamiento
+    context.translate(x-anchor_x, y-anchor_y)
+
+    context.save()
+    # mueve el cursor al punto de control
+    context.translate(anchor_x, anchor_y)
 
     if scale != 1:
         context.scale(scale, scale)
@@ -29,9 +38,21 @@ def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_h
     if rotation:
         context.rotate(math.radians(rotation))
 
-    context.set_source_surface(surface, x-src_x, y-src_y)
-    context.rectangle(x, y, src_width, src_height)
+    # restaura el punto de control
+    context.translate(-anchor_x, -anchor_y)
+
+    _blit(context, surface, src_x, src_y, src_width, src_height)
+
+    context.restore()
+    context.restore()
+
+def _blit(context, surface, src_x, src_y, src_width, src_height):
+    "Dibuja una porción de imagen en el centro del canvas."
+    context.set_source_surface(surface, 0-src_x, 0-src_y)
+    context.rectangle(0, 0, src_width, src_height)
     context.fill()
+
+
 
 def load_surface(path):
     """Genera una superficie a partir de un archivo .png"""
@@ -45,18 +66,18 @@ def load_surface(path):
 def render_text(context, x, y, text, color, size, face):
     """Dibuja una cadena de texto sobre el contexto de canvas."""
 
+    context.save()
     context.set_source_rgba(*color)
 
-    context.select_font_face(face,
-                cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
-
+    context.select_font_face(face, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
     context.set_font_size(size)
-
     context.move_to(x, y)
 
     context.show_text(text)
+    return_value = context.text_extents(text)[2:4]
+    context.restore()
 
-    return context.text_extents(text)[2:4]
+    return return_value
 
 def get_absolute_uri(relative_path):
     """Creates a uri string from a relative path.
@@ -203,7 +224,7 @@ class Sprite:
         self.rotation = rotation
 
     def draw(self, context):
-        self.image.blit(context, self.x - self.anchor_x, self.y - self.anchor_y, scale=self.scale, rotation=self.rotation)
+        self.image.blit(context, self.x, self.y, scale=self.scale, rotation=self.rotation, anchor_x=self.anchor_x, anchor_y=self.anchor_y)
 
     def update(self):
         if (self.image.__class__.__name__ == "Frame"):

@@ -51,7 +51,7 @@ class Game:
         self.mainloop = MainLoop(self, self.canvas, fps=60)
 
         image = glucosa.Image('../data/aceituna.png')
-        self.sprite = glucosa.Sprite(image, 0, 0, 18, 18)
+        self.sprite = glucosa.Sprite(image, 0, 0, 18, 18, scale=2)
         self.events = glucosa.Events(self.canvas)
         self.events.on_mouse_move += self.move_sprite
 
