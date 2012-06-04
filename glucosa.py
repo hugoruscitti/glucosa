@@ -233,7 +233,7 @@ class Sprite:
 class Text:
     """Muestra un texto en la pantalla.
 
-        >>> texto = glucosa.Text('Hola Mundo|nBienvenido a Glucosa!', 10, 100, face='Arial', size=18)
+        >>> texto = glucosa.Text('Hola Mundo\nBienvenido a Glucosa!', 10, 100, face='Arial', size=18)
         >>> texto.draw(contexto)
 
     .. image:: images/texto.png
@@ -353,7 +353,7 @@ class Events(_EventsManager, object):
     >>>
     >>> eventos = glucosa.Events(self.window)
     >>> eventos.on_mouse_button_pressed += self.boton_mouse_presionado
-
+    
     """
 
     # Solo puede existir una instancia de este objeto en el programa.
@@ -410,7 +410,6 @@ class Events(_EventsManager, object):
         return True
 
     def _key_pressed(self, widget, event):
-        print event
         key_event = {'key' : event.keyval }
         self.on_key_pressed(key_event)
         return True
