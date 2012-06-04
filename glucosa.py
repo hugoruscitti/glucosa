@@ -233,7 +233,7 @@ class Sprite:
 class Text:
     """Muestra un texto en la pantalla.
 
-        >>> texto = glucosa.Text('Hola Mundo\nBienvenido a Glucosa!', 10, 100, face='Arial', size=18)
+        >>> texto = glucosa.Text('Hola Mundo\\nBienvenido a Glucosa!', 10, 100, face='Arial', size=18)
         >>> texto.draw(contexto)
 
     .. image:: images/texto.png
