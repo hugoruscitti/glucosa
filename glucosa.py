@@ -298,9 +298,10 @@ class _EventsManager:
     __events__ = ('on_mouse_move',
                   'on_mouse_button_pressed',
                   'on_mouse_button_released',
+                  'on_mouse_scroll_up',
+                  'on_mouse_scroll_down',
                   'on_key_pressed',
-                  'on_key_released',
-                  'on_mouse_ruler_activated' )
+                  'on_key_released')
 
     def __getattr__(self, name):
         if hasattr(self.__class__, '__events__'):
@@ -374,7 +375,7 @@ class Events(_EventsManager, object):
         self._widget.connect('key-release-event',
                              self._key_released)
         self._widget.connect('scroll-event',
-                             self._mouse_ruler_activated)
+                             self._mouse_scroll)
 
     def _mouse_move(self, widget, event):
         mouse_event = {'x' : event.x,
@@ -396,11 +397,16 @@ class Events(_EventsManager, object):
         self.on_mouse_button_released(mouse_event)
         return True
 
-    def _mouse_ruler_activated(self, widget, event):
-        mouse_event = {'scroll' : event.direction,
-                      'x' : event.x,
+    def _mouse_scroll(self, widget, event):
+        mouse_event = {'x' : event.x,
                       'y' : event.y}
-        self.on_mouse_ruler_activated(mouse_event)
+        
+        if (event.direction == self.scroll_up):
+            self.on_mouse_scroll_up(mouse_event)
+            
+        if (event.direction == self.scroll_down):
+            self.on_mouse_scroll_down(mouse_event)
+            
         return True
 
     def _key_pressed(self, widget, event):
@@ -413,6 +419,8 @@ class Events(_EventsManager, object):
         self.on_key_released(key_event)
         return True
 
+    scroll_up = gtk.gdk.SCROLL_UP
+    scroll_down = gtk.gdk.SCROLL_DOWN
 
 class Sound:
     """Un sonido que se puede reproducir una a mas veces.
@@ -523,3 +531,4 @@ class Pencil:
             context.set_source_rgba(*self.color)
 
         context.stroke()
+

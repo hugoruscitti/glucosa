@@ -53,6 +53,16 @@ class Game:
         image = glucosa.Image('../data/aceituna.png')
         self.sprite = glucosa.Sprite(image, 100, 100, 18, 18, scale=2)
         self.events = glucosa.Events(self.canvas)
+        self.events.on_mouse_scroll_up += self.rueda_del_raton_arriba
+        self.events.on_mouse_scroll_down += self.rueda_del_raton_abajo
+
+    def rueda_del_raton_arriba(self, evento):
+        self.sprite.scale += 0.1
+            
+    def rueda_del_raton_abajo(self, evento):
+        self.sprite.scale -= 0.1
+        if (self.sprite.scale < 1):
+            self.sprite.scale = 1
 
     def on_update(self):
         self.sprite.rotation += 1
