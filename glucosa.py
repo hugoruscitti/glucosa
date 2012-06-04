@@ -376,6 +376,8 @@ class Events(_EventsManager, object):
                              self._key_released)
         self._widget.connect('scroll-event',
                              self._mouse_scroll)
+        
+        self._keys_pressed = []
 
     def _mouse_move(self, widget, event):
         mouse_event = {'x' : event.x,
@@ -410,14 +412,29 @@ class Events(_EventsManager, object):
         return True
 
     def _key_pressed(self, widget, event):
-        key_event = {'key' : gtk.gdk.keyval_name(event.keyval) }
+        keyvalue = gtk.gdk.keyval_name(event.keyval)
+        key_event = {'key' : keyvalue }
+        self._register_key(keyvalue)
         self.on_key_pressed(key_event)
         return True
 
     def _key_released(self, widget, event):
-        key_event = {'key' : gtk.gdk.keyval_name(event.keyval) }
+        keyvalue = gtk.gdk.keyval_name(event.keyval)
+        key_event = {'key' :  keyvalue}
+        self._unregister_key(keyvalue)
         self.on_key_released(key_event)
         return True
+
+    def _register_key(self, key):
+        if not(key in self._keys_pressed):
+            self._keys_pressed.append(key)
+
+    def _unregister_key(self, key):
+        if (key in self._keys_pressed):
+            self._keys_pressed.remove(key)
+
+    def get_keys_pressed(self):
+        return self._keys_pressed
 
     scroll_up = gtk.gdk.SCROLL_UP
     scroll_down = gtk.gdk.SCROLL_DOWN

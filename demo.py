@@ -84,13 +84,14 @@ class Game:
         self.crear_actor(evento['x'], evento['y'])
 
     def tecla_pulsada(self, evento):
-        if (evento['key'] == glucosa.Events.K_RIGHT):
+        print self.events.get_keys_pressed()
+        if (glucosa.Events.K_RIGHT in self.events.get_keys_pressed()):
             self.actor_animado.x += 2
-        if (evento['key'] == glucosa.Events.K_LEFT):
+        if (glucosa.Events.K_LEFT in self.events.get_keys_pressed()):
             self.actor_animado.x -= 2
-        if (evento['key'] == glucosa.Events.K_UP):
+        if (glucosa.Events.K_UP in self.events.get_keys_pressed()):
             self.actor_animado.y -= 2
-        if (evento['key'] == glucosa.Events.K_DOWN):
+        if (glucosa.Events.K_DOWN in self.events.get_keys_pressed()):
             self.actor_animado.y += 2
 
     def crear_actor(self, x , y):
