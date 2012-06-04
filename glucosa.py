@@ -410,12 +410,12 @@ class Events(_EventsManager, object):
         return True
 
     def _key_pressed(self, widget, event):
-        key_event = {'key' : event.keyval }
+        key_event = {'key' : gtk.gdk.keyval_name(event.keyval) }
         self.on_key_pressed(key_event)
         return True
 
     def _key_released(self, widget, event):
-        key_event = {'key' : event.keyval }
+        key_event = {'key' : gtk.gdk.keyval_name(event.keyval) }
         self.on_key_released(key_event)
         return True
 

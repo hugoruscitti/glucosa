@@ -84,7 +84,14 @@ class Game:
         self.crear_actor(evento['x'], evento['y'])
 
     def tecla_pulsada(self, evento):
-        print gtk.gdk.keyval_name(evento['key'])
+        if (evento['key'] == glucosa.Events.K_RIGHT):
+            self.actor_animado.x += 2
+        if (evento['key'] == glucosa.Events.K_LEFT):
+            self.actor_animado.x -= 2
+        if (evento['key'] == glucosa.Events.K_UP):
+            self.actor_animado.y -= 2
+        if (evento['key'] == glucosa.Events.K_DOWN):
+            self.actor_animado.y += 2
 
     def crear_actor(self, x , y):
         self.actores.append(glucosa.Sprite(glucosa.Image('data/aceituna.png'), x, y))
