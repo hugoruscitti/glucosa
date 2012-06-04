@@ -63,6 +63,7 @@ class Game:
         self.events.on_mouse_move += self.raton_movido
         self.events.on_mouse_button_pressed += self.boton_mouse_presionado
         self.events.on_key_pressed += self.tecla_pulsada
+        self.events.on_mouse_ruler_activated += self.rueda_del_raton
 
         self.sound = glucosa.Sound("data/jump.wav")
         self.sound.play()
@@ -71,6 +72,9 @@ class Game:
 
     def raton_movido(self, evento):
         pass
+
+    def rueda_del_raton(self, evento):
+        print evento
 
     def boton_mouse_presionado(self, evento):
         self.crear_actor(evento['x'], evento['y'])

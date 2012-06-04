@@ -299,7 +299,8 @@ class _EventsManager:
                   'on_mouse_button_pressed',
                   'on_mouse_button_released',
                   'on_key_pressed',
-                  'on_key_released' )
+                  'on_key_released',
+                  'on_mouse_ruler_activated' )
 
     def __getattr__(self, name):
         if hasattr(self.__class__, '__events__'):
@@ -372,6 +373,8 @@ class Events(_EventsManager, object):
                              self._key_pressed)
         self._widget.connect('key-release-event',
                              self._key_released)
+        self._widget.connect('scroll-event',
+                             self._mouse_ruler_activated)
 
     def _mouse_move(self, widget, event):
         mouse_event = {'x' : event.x,
@@ -380,7 +383,6 @@ class Events(_EventsManager, object):
         return True
 
     def _mouse_button_press(self, widget, event):
-        print event
         mouse_event = {'button' : event.button,
                       'x' : event.x,
                       'y' : event.y}
@@ -392,6 +394,13 @@ class Events(_EventsManager, object):
                       'x' : event.x,
                       'y' : event.y}
         self.on_mouse_button_released(mouse_event)
+        return True
+
+    def _mouse_ruler_activated(self, widget, event):
+        mouse_event = {'scroll' : event.direction,
+                      'x' : event.x,
+                      'y' : event.y}
+        self.on_mouse_ruler_activated(mouse_event)
         return True
 
     def _key_pressed(self, widget, event):
