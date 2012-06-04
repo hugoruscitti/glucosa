@@ -410,6 +410,7 @@ class Events(_EventsManager, object):
         return True
 
     def _key_pressed(self, widget, event):
+        print event
         key_event = {'key' : event.keyval }
         self.on_key_pressed(key_event)
         return True
@@ -421,7 +422,46 @@ class Events(_EventsManager, object):
 
     scroll_up = gtk.gdk.SCROLL_UP
     scroll_down = gtk.gdk.SCROLL_DOWN
-
+    K_a = 'a'
+    K_b = 'b'
+    K_c = 'c'
+    K_d = 'd'
+    K_e = 'e'
+    K_f = 'f'
+    K_g = 'g'
+    K_h = 'h'
+    K_i = 'i'
+    K_j = 'j'
+    K_k = 'j'
+    K_l = 'j'
+    K_m = 'j'
+    K_n = 'j'
+    #K_ñ = 'ntilde'
+    K_o = 'o'
+    K_p = 'p'
+    K_q = 'q'
+    K_r = 'r'
+    K_s = 's'
+    K_t = 't'
+    K_u = 'u'
+    K_v = 'v'
+    K_w = 'w'
+    K_x = 'x'
+    K_y = 'y'
+    K_z = 'z'
+    K_UP = 'Up'
+    K_DOWN = 'Down'
+    K_LEFT = 'Left'
+    K_RIGHT = 'Right'
+    K_SPACE = 'space'
+    K_RETURN = 'Return'
+    K_CONTROL_L = 'Control_L'
+    K_CONTROL_R = 'Control_R'
+    K_SHIFT_L = 'Shift_L'
+    K_SHIFT_R = 'Shift_R'
+    K_TAB = 'Tab'
+    
+    
 class Sound:
     """Un sonido que se puede reproducir una a mas veces.
 
