@@ -353,7 +353,7 @@ class Events(_EventsManager, object):
     >>>
     >>> eventos = glucosa.Events(self.window)
     >>> eventos.on_mouse_button_pressed += self.boton_mouse_presionado
-    
+
     """
 
     # Solo puede existir una instancia de este objeto en el programa.
@@ -376,7 +376,7 @@ class Events(_EventsManager, object):
                              self._key_released)
         self._widget.connect('scroll-event',
                              self._mouse_scroll)
-        
+
         self._keys_pressed = []
 
     def _mouse_move(self, widget, event):
@@ -402,13 +402,13 @@ class Events(_EventsManager, object):
     def _mouse_scroll(self, widget, event):
         mouse_event = {'x' : event.x,
                       'y' : event.y}
-        
+
         if (event.direction == self.scroll_up):
             self.on_mouse_scroll_up(mouse_event)
-            
+
         if (event.direction == self.scroll_down):
             self.on_mouse_scroll_down(mouse_event)
-            
+
         return True
 
     def _key_pressed(self, widget, event):
@@ -476,8 +476,8 @@ class Events(_EventsManager, object):
     K_SHIFT_L = 'Shift_L'
     K_SHIFT_R = 'Shift_R'
     K_TAB = 'Tab'
-    
-    
+
+
 class Sound:
     """Un sonido que se puede reproducir una a mas veces.
 
@@ -588,3 +588,32 @@ class Pencil:
 
         context.stroke()
 
+
+class MainLoop:
+    """Representa el bucle principal de un juego.
+
+    Tiene un metodo especial llamado set_controller, en donde
+    uno tiene que especificar el objeto que quiere colocar cómo
+    administrador del juego.
+    """
+
+    def __init__(self, controller, widget, fps=60):
+        self.fps = fps
+        self._set_controller(controller, widget)
+
+    def _set_controller(self, controller, widget):
+        self.controller = controller
+        self.widget = widget
+        gobject.timeout_add(1000/self.fps, self._update)
+        self.widget.connect("expose-event", self._on_draw)
+
+    def _update(self):
+        self.controller.on_update()
+        gobject.idle_add(self.widget.queue_draw)
+        return True
+
+    def _on_draw(self, event, a):
+        context = self.widget.window.cairo_create()
+        window_size = self.widget.get_window().get_size()
+        fill(context, (50,50,50), window_size)
+        self.controller.on_draw(context)
