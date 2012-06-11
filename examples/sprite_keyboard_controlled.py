@@ -16,7 +16,7 @@ class Player(glucosa.Sprite):
     def __init__(self, events):
         self.image_stand = glucosa.Image("../data/ayni_parado.png")
         self.image_walk = glucosa.Frame("../data/ayni_camina.png", cols=4)
-        glucosa.Sprite.__init__(self, self.image_stand, 0, 0)
+        glucosa.Sprite.__init__(self, self.image_stand, 75, 125, anchor_x=50, anchor_y=100)
 
         self.events = events
         self.events.on_key_pressed += self.on_key_down
@@ -24,8 +24,10 @@ class Player(glucosa.Sprite):
     def on_key_down(self):
         if self.events.is_pressed(glucosa.Events.K_LEFT):
             self.x -= SPEED
+            self.flip = False
         if self.events.is_pressed(glucosa.Events.K_RIGHT):
             self.x += SPEED
+            self.flip = True
 
 class Game:
     """Es el administrador del juego.

@@ -15,7 +15,7 @@ def fill(context, color, size):
     context.rectangle(0, 0, size[0], size[1])
     context.fill()
 
-def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_height=None, scale=1, rotation=0, anchor_x=0, anchor_y=0):
+def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_height=None, scale=1, rotation=0, anchor_x=0, anchor_y=0, flip=False):
     """Dibuja una superficie sobre un contexto de canvas."""
     context.save()
 
@@ -26,14 +26,20 @@ def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_h
         src_height = surface.get_height()
 
     context.save() # desplazamiento
+
     context.translate(x-anchor_x, y-anchor_y)
+
 
     context.save()
     # mueve el cursor al punto de control
     context.translate(anchor_x, anchor_y)
+    if flip:
+        context.scale(-1, 1)
 
     if scale != 1:
         context.scale(scale, scale)
+
+
 
     if rotation:
         context.rotate(math.radians(rotation))
@@ -131,10 +137,11 @@ class Image:
     def __init__(self, path):
         self.surface = load_surface(path)
 
-    def blit(self, context, x, y, scale=1, rotation=0, anchor_x=0, anchor_y=0):
+    def blit(self, context, x, y, scale=1, rotation=0, anchor_x=0, anchor_y=0, flip=False):
         blit_surface(context, self.surface, x, y,
                               scale=scale, rotation=rotation,
-                              anchor_x=anchor_x, anchor_y=anchor_y)
+                              anchor_x=anchor_x, anchor_y=anchor_y,
+                              flip=flip)
 
 class Frame(Image):
     """Representa un cuadro de animación, realizado dividiendo una imagen."""
@@ -154,15 +161,13 @@ class Frame(Image):
     def set_frame(self, index):
         self.frame_index = index
 
-    def blit(self, context, x, y, scale=1, rotation=0, anchor_x=0, anchor_y=0):
-        #TODO usar glucosa.blit_surface con parametros para que dibuje
-        # solo una parte del tile
+    def blit(self, context, x, y, scale=1, rotation=0, anchor_x=0, anchor_y=0, flip=False):
         blit_surface(context, self.surface, x, y,
                              self.frame_coordinates[self.frame_index][0],
                              self.frame_coordinates[self.frame_index][1],
                              self.frame_width, self.frame_height,
                              scale=scale, rotation=rotation,
-                             anchor_x=anchor_x, anchor_y=anchor_y)
+                             anchor_x=anchor_x, anchor_y=anchor_y, flip=flip)
 
     def create_frame_coordinates(self):
         """ Calcula las posiciones del cuadro de animación de la Imagen."""
@@ -212,9 +217,10 @@ class Sprite:
     - anchor_y -- punto de control vertical.
     - scale -- tamaño del sprite (por ejemplo: 1 es normal, 2 el doble de tamaño...)
     - rotation -- la rotación en grados.
+    - flip -- espejado horizontal.
     """
 
-    def __init__(self, image, x, y, anchor_x=0, anchor_y=0, scale=1, rotation=0):
+    def __init__(self, image, x, y, anchor_x=0, anchor_y=0, scale=1, rotation=0, flip=False):
         self.image = image
         self.x = x
         self.y = y
@@ -222,9 +228,10 @@ class Sprite:
         self.anchor_y = anchor_y
         self.scale = scale
         self.rotation = rotation
+        self.flip = flip
 
     def draw(self, context):
-        self.image.blit(context, self.x, self.y, scale=self.scale, rotation=self.rotation, anchor_x=self.anchor_x, anchor_y=self.anchor_y)
+        self.image.blit(context, self.x, self.y, scale=self.scale, rotation=self.rotation, anchor_x=self.anchor_x, anchor_y=self.anchor_y, flip=self.flip)
 
     def update(self):
         if (self.image.__class__.__name__ == "Frame"):
@@ -420,16 +427,16 @@ class Events(_EventsManager, object):
 
     def _key_pressed(self, widget, event):
         keyvalue = gtk.gdk.keyval_name(event.keyval)
-        
+
         # Crea una tarea solo si la lista de teclas esta vacia.
-        # Cuando se deja de pulsar las teclas la lista se vacia y se 
+        # Cuando se deja de pulsar las teclas la lista se vacia y se
         # puede generar de nuevo una tarea.
         if (len(self._keys_pressed) == 0):
             gobject.timeout_add(10, self._key_repeater)
-        
+
         self._register_key(keyvalue)
         self.on_key_pressed()
-            
+
         return True
 
     def _key_released(self, widget, event):
