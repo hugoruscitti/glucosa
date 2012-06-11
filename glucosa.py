@@ -411,18 +411,32 @@ class Events(_EventsManager, object):
             
         return True
 
+    def is_pressed(self, key):
+        return (key in self._keys_pressed)
+
+    def _key_repeater(self):
+        self.on_key_pressed()
+        return len(self._keys_pressed) > 0
+
     def _key_pressed(self, widget, event):
         keyvalue = gtk.gdk.keyval_name(event.keyval)
-        key_event = {'key' : keyvalue }
+        
+        # Crea una tarea solo si es la primera tecla pulsada.
+        # Cuando se deja de pulsar las teclas la lista se vacia y se 
+        # puede generar de nuevo una tarea.
+        if (not(keyvalue in self._keys_pressed) and 
+            len(self._keys_pressed) == 0):
+            gobject.timeout_add(10, self._key_repeater)
+        
         self._register_key(keyvalue)
-        self.on_key_pressed(key_event)
+        self.on_key_pressed()
+            
         return True
 
     def _key_released(self, widget, event):
         keyvalue = gtk.gdk.keyval_name(event.keyval)
-        key_event = {'key' :  keyvalue}
         self._unregister_key(keyvalue)
-        self.on_key_released(key_event)
+        self.on_key_released()
         return True
 
     def _register_key(self, key):
@@ -432,9 +446,6 @@ class Events(_EventsManager, object):
     def _unregister_key(self, key):
         if (key in self._keys_pressed):
             self._keys_pressed.remove(key)
-
-    def get_keys_pressed(self):
-        return self._keys_pressed
 
     scroll_up = gtk.gdk.SCROLL_UP
     scroll_down = gtk.gdk.SCROLL_DOWN

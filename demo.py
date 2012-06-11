@@ -83,16 +83,15 @@ class Game:
     def boton_mouse_presionado(self, evento):
         self.crear_actor(evento['x'], evento['y'])
 
-    def tecla_pulsada(self, evento):
-        print self.events.get_keys_pressed()
-        if (glucosa.Events.K_RIGHT in self.events.get_keys_pressed()):
-            self.actor_animado.x += 2
-        if (glucosa.Events.K_LEFT in self.events.get_keys_pressed()):
-            self.actor_animado.x -= 2
-        if (glucosa.Events.K_UP in self.events.get_keys_pressed()):
-            self.actor_animado.y -= 2
-        if (glucosa.Events.K_DOWN in self.events.get_keys_pressed()):
-            self.actor_animado.y += 2
+    def tecla_pulsada(self):
+        if (self.events.is_pressed(glucosa.Events.K_RIGHT)):
+            self.actor_animado.x += 1
+        if (self.events.is_pressed(glucosa.Events.K_LEFT)):
+            self.actor_animado.x -= 1
+        if (self.events.is_pressed(glucosa.Events.K_UP)):
+            self.actor_animado.y -= 1
+        if (self.events.is_pressed(glucosa.Events.K_DOWN)):
+            self.actor_animado.y += 1
 
     def crear_actor(self, x , y):
         self.actores.append(glucosa.Sprite(glucosa.Image('data/aceituna.png'), x, y))
