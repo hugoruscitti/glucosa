@@ -421,11 +421,10 @@ class Events(_EventsManager, object):
     def _key_pressed(self, widget, event):
         keyvalue = gtk.gdk.keyval_name(event.keyval)
         
-        # Crea una tarea solo si es la primera tecla pulsada.
+        # Crea una tarea solo si la lista de teclas esta vacia.
         # Cuando se deja de pulsar las teclas la lista se vacia y se 
         # puede generar de nuevo una tarea.
-        if (not(keyvalue in self._keys_pressed) and 
-            len(self._keys_pressed) == 0):
+        if (len(self._keys_pressed) == 0):
             gobject.timeout_add(10, self._key_repeater)
         
         self._register_key(keyvalue)
