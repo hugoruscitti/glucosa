@@ -8,36 +8,6 @@ import gobject
 import glucosa
 
 
-
-class MainLoop:
-    """Representa el bucle principal de un juego.
-
-    Tiene un metodo especial llamado set_controller, en donde
-    uno tiene que especificar el objeto que quiere colocar cómo
-    administrador del juego.
-    """
-
-    def __init__(self, controller, widget, fps=60):
-        self.fps = fps
-        self._set_controller(controller, widget)
-
-    def _set_controller(self, controller, widget):
-        self.controller = controller
-        self.widget = widget
-        gobject.timeout_add(1000/self.fps, self._update)
-        self.widget.connect("expose-event", self._on_draw)
-
-    def _update(self):
-        self.controller.on_update()
-        gobject.idle_add(self.widget.queue_draw)
-        return True
-
-    def _on_draw(self, event, a):
-        context = self.widget.window.cairo_create()
-        window_size = self.widget.get_window().get_size()
-        glucosa.fill(context, (50,50,50), window_size)
-        self.controller.on_draw(context)
-
 class Game:
     """Es el administrador del juego.
 
@@ -47,7 +17,7 @@ class Game:
 
     def __init__(self):
         (self.window, self.canvas) = glucosa.create_window()
-        self.mainloop = MainLoop(self, self.canvas, fps=60)
+        self.mainloop = glucosa.MainLoop(self, self.canvas, fps=60)
 
         self.actores = []
 
@@ -76,7 +46,8 @@ class Game:
 
     def rueda_del_raton_arriba(self, evento):
             print "arriba"
-            
+
+
     def rueda_del_raton_abajo(self, evento):
             print "abajo"
 
