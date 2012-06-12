@@ -33,13 +33,12 @@ def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_h
     context.save()
     # mueve el cursor al punto de control
     context.translate(anchor_x, anchor_y)
+
     if flip:
         context.scale(-1, 1)
 
     if scale != 1:
         context.scale(scale, scale)
-
-
 
     if rotation:
         context.rotate(math.radians(rotation))
@@ -57,8 +56,6 @@ def _blit(context, surface, src_x, src_y, src_width, src_height):
     context.set_source_surface(surface, 0-src_x, 0-src_y)
     context.rectangle(0, 0, src_width, src_height)
     context.fill()
-
-
 
 def load_surface(path):
     """Genera una superficie a partir de un archivo .png"""
@@ -86,9 +83,9 @@ def render_text(context, x, y, text, color, size, face):
     return return_value
 
 def get_absolute_uri(relative_path):
-    """Creates a uri string from a relative path.
+    """Obtiene una ruta uri desde un path relativo.
 
-    Example:
+    Por ejemplo:
 
         >>> get_absolute_uri("data/my_image.png")
         file:///media/disk/glucosa/data/my_image.png
@@ -132,7 +129,12 @@ def create_window():
 # Sume object oriented stuff
 
 class Image:
-    """Una imagen simple, que puede ser dibujada por un sprite."""
+    """Una imagen simple, que puede ser dibujada por un sprite.
+
+    Por ejemplo:
+
+        >>> imagen = glucosa.Image('data/fantasma.png')
+    """
 
     def __init__(self, path):
         self.surface = load_surface(path)
@@ -144,7 +146,19 @@ class Image:
                               flip=flip)
 
 class Frame(Image):
-    """Representa un cuadro de animación, realizado dividiendo una imagen."""
+    """Representa un cuadro de animación, realizado dividiendo una imagen.
+
+    Por ejemplo:
+
+        >>> animation = glucosa.Frame("data/player_stand.png", cols=4)
+        >>> animation.frame_index
+        1
+        >>> animation.advance()
+        >>> animation.frame_index
+        2
+        >>> sprite.image = animation
+
+    """
 
     def __init__(self, path, cols, rows = 1):
         Image.__init__(self, path)
@@ -272,7 +286,7 @@ class Text:
             dy += text_height
 
 class Singleton(type):
-    """ Clase para garantizar que una clase sólo tenga una instancia y
+    """Clase para garantizar que una clase sólo tenga una instancia y
     proporcionar un punto de acceso global a ella.
 
     Para que una clase sea Singleton simplemente se tiene que
@@ -465,10 +479,10 @@ class Events(_EventsManager, object):
     K_h = 'h'
     K_i = 'i'
     K_j = 'j'
-    K_k = 'j'
-    K_l = 'j'
-    K_m = 'j'
-    K_n = 'j'
+    K_k = 'k'
+    K_l = 'l'
+    K_m = 'm'
+    K_n = 'n'
     #K_ñ = 'ntilde'
     K_o = 'o'
     K_p = 'p'
@@ -555,7 +569,7 @@ class Pencil:
 
         context.stroke()
 
-    def draw_circle (self, context, center_x, center_y, radius, line_width=1):
+    def draw_circle(self, context, center_x, center_y, radius, line_width=1):
         """ Dibuja un circulo en pantalla
 
         >>> self.lapiz = glucosa.Pencil()
@@ -604,7 +618,6 @@ class Pencil:
             context.set_source_rgba(*self.color)
 
         context.stroke()
-
 
 class MainLoop:
     """Representa el bucle principal de un juego.
