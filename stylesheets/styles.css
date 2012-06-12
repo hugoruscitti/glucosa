@@ -253,3 +253,8 @@ footer {
     color:#444;
   }
 }
+
+div.center {
+    text-align:center;
+    margin: 10px;
+}
