@@ -79,7 +79,6 @@ table {
 th, td {
   text-align:left;
   padding:5px 10px;
-  border-bottom:1px solid #e5e5e5;
 }
 
 dt {
@@ -258,3 +257,8 @@ div.center {
     text-align:center;
     margin: 10px;
 }
+
+img.preview {
+    border: 1px solid #ccc;
+}
+

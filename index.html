@@ -32,25 +32,55 @@
 <h3>Glucosa, azúcar para crear juegos</h3>
 
 <p>Glucosa es una biblioteca para hacer videojuegos. Su diseño es tan básico, que
-cabe completamente en un archivo .py</p>
+cabe completamente en un archivo <strong>.py</strong></p>
 
-<p>El objetivo de Glucosa, es funcionar sobre <strong>cairo</strong> y <a href='http://www.gtk.org/'>gtk</a> para
-construir juegos muy sencillos para equipos XO (de olpc) y facilitar la transición
-de pygame a cairo.</p>
+<p>El objetivo de Glucosa, es funcionar sobre <a href='http://cairographics.org/'>cairo</a> y 
+<a href='http://www.gtk.org/'>gtk</a> para construir juegos muy sencillos
+para equipos <a href='http://one.laptop.org/about/mission'>XO OLPC</a>.</p>
 
 <h3>¿Una mira rápida?</h3>
 
 <p>Glucosa es super simple, conociendo unas pocas funciones se pueden hacer
 maravillas:
 
+<table>
+    <tr>
+        <td>
+        
 <pre><code>import glucosa
-...
-# TODO: hacer una funcion init para que la creación de la ventana
-# gtk esté dentro de glucosa, o una función llamada demo que haga algo.
+
+image = glucosa.Image('aceituna.png')
+sprite = glucosa.Sprite(image)
+sprite.x = 50
+sprite.y = 50
+</code></pre>
+        </td>
+        <td>
+            <img class='preview' src='data/example1.png'>
+        </td>
+    </td>
+
+    <tr>
+        <td>
+        
+<pre><code>import glucosa
+
+image = glucosa.Image('aceituna.png')
+s1 = glucosa.Sprite(image, x=77, y=28)
+s1.scale = 2
+s1.rotation = 40
+
+s2 = glucosa.Sprite(image, x=25, y=70)
+s2.scale = 0.5
+s2.rotation = -30
 </code></pre>
 
-<p>
-# TODO: Colocar una imagen del ejemplo de arriba.
+        </td>
+        <td>
+            <img class='preview' src='data/example2.png'>
+        </td>
+    </td>
+</table>
 
 <h3>Instalación</h3>
 
@@ -62,7 +92,8 @@ cd glucosa/examples
 python sprite_keyboard_controlled.py</code></pre>
 
 <div class='center'>
-    <img src='data/example.png'>
+    <img src='data/example.png'><br/>
+    <em>Usá el teclado para mover al personaje.</em>
 </div>
 
 <p>También existen varias <a href='http://glucosa.readthedocs.org/en/latest/motivacion.html#instalacion'>alternativas de instalación</a>
