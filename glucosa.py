@@ -498,12 +498,12 @@ class Events(_EventsManager, object):
 class Sound:
     """Un sonido que se puede reproducir una a mas veces.
 
-        >>> s = Sound("file://data/sound.wav")
+        >>> s = Sound("data/sound.wav")
         >>> s.play()
     """
 
     def __init__(self, path):
-        "Creates a new sound instance, ``path`` must be a string with route to wav file."
+        "Genera una nueva instancia de Sound, el parametro ``path`` deber ser ruta al archivo wav."
         self.path = path
         self.player = gst.element_factory_make("playbin2", "player")
         self.player.set_property("uri", get_absolute_uri(path))
