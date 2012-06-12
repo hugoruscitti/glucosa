@@ -163,8 +163,8 @@ class Frame(Image):
 
     def blit(self, context, x, y, scale=1, rotation=0, anchor_x=0, anchor_y=0, flip=False):
         blit_surface(context, self.surface, x, y,
-                             self.frame_coordinates[self.frame_index][0],
-                             self.frame_coordinates[self.frame_index][1],
+                             self.frame_coordinates[int(self.frame_index)][0],
+                             self.frame_coordinates[int(self.frame_index)][1],
                              self.frame_width, self.frame_height,
                              scale=scale, rotation=rotation,
                              anchor_x=anchor_x, anchor_y=anchor_y, flip=flip)
@@ -184,14 +184,14 @@ class Frame(Image):
 
             cont += 1
 
-    def advance(self):
+    def advance(self, speed=1):
         """Avanza un cuadro de animación.
 
         Este método permite hacer animaciones cíclicas fácilmente. Si
         al momento de avanzar tiene que reiniciar al cuadro 0 lo hace, y
         retorna True avisando del reinicio."""
 
-        self.frame_index += 1
+        self.frame_index += speed
 
         if self.frame_index >= self.frame_limit:
             self.frame_index = 0
