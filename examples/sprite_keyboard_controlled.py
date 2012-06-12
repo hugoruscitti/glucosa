@@ -11,6 +11,44 @@ import glucosa
 
 SPEED = 4
 
+class State:
+
+    def __init__(self, player):
+        self.player = player
+
+    def update(self):
+        pass
+
+class StandState(State):
+
+    def __init__(self, player):
+        State.__init__(self, player)
+        self.player.image = self.player.image_stand
+
+    def update(self):
+        if self.player.left_pressed or self.player.right_pressed:
+            self.player.set_state(WalkState(self.player))
+
+class WalkState(State):
+
+    def __init__(self, player):
+        State.__init__(self, player)
+        self.player.image = self.player.image_walk
+
+    def update(self):
+        self.player.image.advance(0.25)
+
+        if self.player.left_pressed:
+            self.player.x -= SPEED
+            self.player.flip = False
+        else:
+            if self.player.right_pressed:
+                self.player.x += SPEED
+                self.player.flip = True
+            else:
+                self.player.set_state(StandState(self.player))
+
+
 class Player(glucosa.Sprite):
 
     def __init__(self, events):
@@ -18,16 +56,30 @@ class Player(glucosa.Sprite):
         self.image_walk = glucosa.Frame("../data/ayni_camina.png", cols=4)
         glucosa.Sprite.__init__(self, self.image_stand, 75, 125, anchor_x=50, anchor_y=100)
 
+        self.set_state(StandState(self))
+
+        # conecta los eventos
         self.events = events
         self.events.on_key_pressed += self.on_key_down
+        self.events.on_key_released += self.on_key_up
+        self.left_pressed = False
+        self.right_pressed = False
+
+    def set_state(self, state):
+        self.state = state
+
+    def update(self):
+        self.state.update()
 
     def on_key_down(self):
-        if self.events.is_pressed(glucosa.Events.K_LEFT):
-            self.x -= SPEED
-            self.flip = False
-        if self.events.is_pressed(glucosa.Events.K_RIGHT):
-            self.x += SPEED
-            self.flip = True
+        self.update_control_state()
+
+    def on_key_up(self):
+        self.update_control_state()
+
+    def update_control_state(self):
+        self.left_pressed = self.events.is_pressed(glucosa.Events.K_LEFT)
+        self.right_pressed = self.events.is_pressed(glucosa.Events.K_RIGHT)
 
 class Game:
     """Es el administrador del juego.
