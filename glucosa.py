@@ -94,6 +94,15 @@ def get_absolute_uri(relative_path):
     absolute_path = os.path.abspath(relative_path)
     return "file://%s" %(absolute_path)
 
+def range(a, b):
+    "Retorna la distancia entre dos numeros."
+    return abs(b - a)
+
+def range_between_two_points((x1, y1), (x2, y2)):
+    "Retorna la distancia entre dos puntos en dos dimensiones."
+    return math.sqrt(range(x1, x2) ** 2 + range(y1, y2) ** 2)
+
+
 def create_window():
     """Genera una ventana con un elemento DrawingArea dentro.
 
@@ -138,6 +147,8 @@ class Image:
 
     def __init__(self, path):
         self.surface = load_surface(path)
+        self.width = self.surface.get_width()
+        self.height = self.surface.get_height()
 
     def blit(self, context, x, y, scale=1, rotation=0, anchor_x=0, anchor_y=0, flip=False):
         blit_surface(context, self.surface, x, y,
@@ -168,6 +179,9 @@ class Frame(Image):
         self.frame_limit = cols * rows
         self.frame_width = self.surface.get_width() / self.cols
         self.frame_height = self.surface.get_height() / self.rows
+        
+        self.width = self.frame_width
+        self.height = self.frame_height
 
         self.frame_coordinates = []
         self.create_frame_coordinates()
@@ -243,6 +257,7 @@ class Sprite:
         self.scale = scale
         self.rotation = rotation
         self.flip = flip
+        self.radius = (self.image.width / 2)
 
     def draw(self, context):
         self.image.blit(context, self.x, self.y, scale=self.scale, rotation=self.rotation, anchor_x=self.anchor_x, anchor_y=self.anchor_y, flip=self.flip)
@@ -251,6 +266,14 @@ class Sprite:
         if (self.image.__class__.__name__ == "Frame"):
             self.image.advance()
 
+    def get_center(self):
+        return self.x + (self.image.width / 2), self.y + (self.image.height / 2)
+
+    def collision_with(self, sprite):
+        "Retorna True si dos sprites estan en contacto."
+        return range_between_two_points((self.x, self.y), (sprite.x, sprite.y)) < self.radius + sprite.radius
+        
+        
 class Text:
     """Muestra un texto en la pantalla.
 

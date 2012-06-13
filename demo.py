@@ -23,6 +23,9 @@ class Game:
 
         self.actor_animado = glucosa.Sprite(glucosa.Frame('data/moneda.png', 8), 0, 0)
         self.actor_animado.y = 60
+        self.actor_animado2 = glucosa.Sprite(glucosa.Frame('data/moneda.png', 8), 0, 0)
+        self.actor_animado2.y = 60
+        self.actor_animado2.x = 90
         self.texto = glucosa.Text("Hola Mundo:\n", 5, 150,
                           face="Arial",
                           size=18)
@@ -45,11 +48,10 @@ class Game:
         pass
 
     def rueda_del_raton_arriba(self, evento):
-            print "arriba"
-
+        print "arriba"
 
     def rueda_del_raton_abajo(self, evento):
-            print "abajo"
+        print "abajo"
 
     def boton_mouse_presionado(self, evento):
         self.crear_actor(evento['x'], evento['y'])
@@ -69,15 +71,19 @@ class Game:
 
     def on_update(self):
         self.actor_animado.update()
+        if (self.actor_animado.collision_with(self.actor_animado2)):
+            print "COLISION!!!"
 
     def on_draw(self, context):
         for actor in self.actores:
             actor.draw(context)
 
         self.actor_animado.draw(context)
+        self.actor_animado2.draw(context)
         self.texto.draw(context)
         self.lapiz.draw_line(context, 10, 10, 100, 100, 1)
-        self.lapiz.draw_circle(context, 100, 100, 60)
+        center_x, center_y = self.actor_animado.get_center()
+        self.lapiz.draw_circle(context, center_x, center_y, 10)
         self.lapiz.draw_arc(context, 100, 120, 60, 0, 180)
         self.lapiz.draw_box(context, 20, 20, 150, 30, 1, (255,0,56))
 
