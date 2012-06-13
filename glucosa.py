@@ -270,7 +270,7 @@ class Sprite:
         return self.x + (self.image.width / 2), self.y + (self.image.height / 2)
 
     def collision_with(self, sprite):
-        "Retorna True si dos sprites estan en contacto."
+        "Retorna True si el sprite colisiona con otro sprite."
         return range_between_two_points((self.x, self.y), (sprite.x, sprite.y)) < self.radius + sprite.radius
         
         
