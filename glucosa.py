@@ -257,7 +257,7 @@ class Sprite:
         self.scale = scale
         self.rotation = rotation
         self.flip = flip
-        self.radius = (self.image.width / 2)
+        self.radius = (max(self.image.width, self.image.height) / 2)
 
     def draw(self, context):
         self.image.blit(context, self.x, self.y, scale=self.scale, rotation=self.rotation, anchor_x=self.anchor_x, anchor_y=self.anchor_y, flip=self.flip)
