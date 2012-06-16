@@ -260,13 +260,18 @@ class Sprite:
         self.radius = (max(self.image.width, self.image.height) / 2)
 
     def draw(self, context):
+        """ Dibuja un el sprite en el contexto """
         self.image.blit(context, self.x, self.y, scale=self.scale, rotation=self.rotation, anchor_x=self.anchor_x, anchor_y=self.anchor_y, flip=self.flip)
 
     def update(self):
+        """ Actualiza el estado de la animación del Sprite si el Sprite contiene un Frame,
+        en vez de una Imagen.
+        """
         if (self.image.__class__.__name__ == "Frame"):
             self.image.advance()
 
     def get_center(self):
+        """ Obtiene la posicion central del Sprite """
         return self.x + (self.image.width / 2), self.y + (self.image.height / 2)
 
     def collision_with(self, sprite):
