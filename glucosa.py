@@ -404,7 +404,7 @@ class Events(_EventsManager, object):
     >>> eventos.on_mouse_button_pressed += self.boton_mouse_presionado
 
 
-    Los posibles eventos a los que se puede conectar un metido son:
+    Los posibles eventos a los que se puede conectar un metodo son:
         
     - on_mouse_move ( al mover el raton por la pantalla ).
     - on_mouse_button_pressed ( al soltar un botón del ratón ).
@@ -472,7 +472,7 @@ class Events(_EventsManager, object):
         return True
 
     def is_pressed(self, key):
-        """ Comprueba si una tecla del teclado está pulsada 
+        """ Comprueba si una tecla está pulsada 
         
         >>> if (self.events.is_pressed(glucosa.Events.K_b)):
         >>>    print "Ha spulsado la tecla b."
