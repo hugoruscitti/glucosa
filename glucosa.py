@@ -405,13 +405,14 @@ class Events(_EventsManager, object):
 
 
     Los posibles eventos a los que se puede conectar un metido son:
-    - on_mouse_move ( al mover el raton por la pantalla )
-    - on_mouse_button_pressed ( al soltar un botón del ratón )
-    - on_mouse_button_released ( al presionar un btoón del ratón )
-    - on_mouse_scroll_up ( al mover la rueda central del raton hacia arriba )
-    - on_mouse_scroll_down ( al mover la rueda central del raton hacia abajo )
-    - on_key_pressed ( al pulsar una tecla )
-    - on_key_released ( al soltar una tecla )
+        
+    - on_mouse_move ( al mover el raton por la pantalla ).
+    - on_mouse_button_pressed ( al soltar un botón del ratón ).
+    - on_mouse_button_released ( al presionar un btoón del ratón ).
+    - on_mouse_scroll_up ( al mover la rueda central del raton hacia arriba ).
+    - on_mouse_scroll_down ( al mover la rueda central del raton hacia abajo ).
+    - on_key_pressed ( al pulsar una tecla ).
+    - on_key_released ( al soltar una tecla ).
     
     """
 
