@@ -52,7 +52,7 @@ def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_h
     context.restore()
 
 def _blit(context, surface, src_x, src_y, src_width, src_height):
-    "Dibuja una porción de imagen en el centro del canvas."
+    "Dibuja una porción de imagen en el contexto del canvas."
     context.set_source_surface(surface, 0-src_x, 0-src_y)
     context.rectangle(0, 0, src_width, src_height)
     context.fill()
@@ -403,6 +403,16 @@ class Events(_EventsManager, object):
     >>> eventos = glucosa.Events(self.window)
     >>> eventos.on_mouse_button_pressed += self.boton_mouse_presionado
 
+
+    Los posibles eventos a los que se puede conectar un metido son:
+    - on_mouse_move ( al mover el raton por la pantalla )
+    - on_mouse_button_pressed ( al soltar un botón del ratón )
+    - on_mouse_button_released ( al presionar un btoón del ratón )
+    - on_mouse_scroll_up ( al mover la rueda central del raton hacia arriba )
+    - on_mouse_scroll_down ( al mover la rueda central del raton hacia abajo )
+    - on_key_pressed ( al pulsar una tecla )
+    - on_key_released ( al soltar una tecla )
+    
     """
 
     # Solo puede existir una instancia de este objeto en el programa.
@@ -461,6 +471,11 @@ class Events(_EventsManager, object):
         return True
 
     def is_pressed(self, key):
+        """ Comprueba si una tecla del teclado está pulsada 
+        
+        >>> if (self.events.is_pressed(glucosa.Events.K_b)):
+        >>>    print "Ha spulsado la tecla b."
+        """
         return (key in self._keys_pressed)
 
     def _key_repeater(self):
