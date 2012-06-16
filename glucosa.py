@@ -94,13 +94,13 @@ def get_absolute_uri(relative_path):
     absolute_path = os.path.abspath(relative_path)
     return "file://%s" %(absolute_path)
 
-def range(a, b):
+def _range(a, b):
     "Retorna la distancia entre dos numeros."
     return abs(b - a)
 
-def range_between_two_points((x1, y1), (x2, y2)):
+def _range_between_two_points((x1, y1), (x2, y2)):
     "Retorna la distancia entre dos puntos en dos dimensiones."
-    return math.sqrt(range(x1, x2) ** 2 + range(y1, y2) ** 2)
+    return math.sqrt(_range(x1, x2) ** 2 + _range(y1, y2) ** 2)
 
 
 def create_window():
@@ -271,7 +271,7 @@ class Sprite:
 
     def collision_with(self, sprite):
         "Retorna True si el sprite colisiona con otro sprite."
-        return range_between_two_points((self.x, self.y), (sprite.x, sprite.y)) < self.radius + sprite.radius
+        return _range_between_two_points(self.get_center(), sprite.get_center()) < self.radius + sprite.radius
         
         
 class Text:
