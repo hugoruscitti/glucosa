@@ -41,7 +41,7 @@ class Game:
             self.texto_colision.text = "¡COLISION!"
         else:
             self.texto_colision.text = ""
-        
+
 
     def on_draw(self, context):
         self.sprite.draw(context)
