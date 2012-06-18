@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
+sys.path.append("..")
 
 import gtk
 import gobject
@@ -21,9 +22,9 @@ class Game:
 
         self.actores = []
 
-        self.actor_animado = glucosa.Sprite(glucosa.Frame('data/moneda.png', 8), 0, 0)
+        self.actor_animado = glucosa.Sprite(glucosa.Frame('../data/moneda.png', 8), 0, 0)
         self.actor_animado.y = 60
-        self.actor_animado2 = glucosa.Sprite(glucosa.Frame('data/moneda.png', 8), 0, 0)
+        self.actor_animado2 = glucosa.Sprite(glucosa.Frame('../data/moneda.png', 8), 0, 0)
         self.actor_animado2.y = 60
         self.actor_animado2.x = 90
         self.texto = glucosa.Text("Hola Mundo:\n", 5, 150,
