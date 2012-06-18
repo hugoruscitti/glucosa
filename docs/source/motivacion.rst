@@ -1,3 +1,10 @@
+Introducción
+============
+
+Glucosa es una biblioteca super pequeña, persada para
+facilitar el desarrollo de videojuegos y programas
+multimedia.
+
 Motivación
 ----------
 
@@ -25,11 +32,19 @@ Dentro del directorio que se generará, encontrarás ejemplos y el archivo mas i
 que todo funcione: *glucosa.py*.
 
 Otra opción, sobretodo cuando estás usando la biblioteca dentro de otro
-proyecto, es descargar solamente los archivos básicos para que glucosa funcione::
+proyecto, es descargar solamente el archivo ``glucosa.py`` para incluir en tu proyecto::
 
     wget https://raw.github.com/hugoruscitti/glucosa/master/glucosa.py
-    wget https://raw.github.com/hugoruscitti/glucosa/master/demo.py
 
-Listo, ahora puedes probar nuestro programa de ejemplo::
 
-    python demo.py
+¿Cómo empezar?
+--------------
+
+El repositorio de glucosa tiene varios ejemplos dentro del directorio
+``examples``, te recomendamos comenzar por ahí, viendo qué hace cada
+ejemplo, ejecutándolos para darte una idea de lo que glucosa puede
+hacer.
+
+El siguiente paso es revisar esta documentación, incluso tenemos un
+tutorial básico para comenzar. Aquí hemos incluido mucha documentación
+sobre cómo funciona la biblioteca y todos los elementos que la componen.

@@ -11,8 +11,10 @@ Contenido:
 .. toctree::
    :maxdepth: 2
 
-   motivacion.rst
+   introduccion.rst
+   tutorial.rst
    usar_desde_sugar_xo.rst
+   creando_una_actividad_sugar.rst
    api.rst
 
 
