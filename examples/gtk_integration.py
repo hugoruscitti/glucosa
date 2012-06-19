@@ -165,9 +165,10 @@ class MainWindow:
         
         # --- CLUCOSA ---        
         self.mainloop = glucosa.MainLoop(self, self.area, fps=60)
-        image = glucosa.Image('../data/aceituna.png')
+        image = glucosa.Image('../data/glucosa_logo.png')
         self.sprite = glucosa.Sprite(image, 200, 75, 18, 18)
-        
+        self.sprite.anchor_x = 30
+        self.sprite.anchor_y = 38
         
     def on_update(self):
         self.sprite.update()
