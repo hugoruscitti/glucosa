@@ -1,3 +1,5 @@
+.. _tutorial:
+
 Tutorial de programación básico
 ===============================
 

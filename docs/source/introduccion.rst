@@ -46,5 +46,5 @@ ejemplo, ejecutándolos para darte una idea de lo que glucosa puede
 hacer.
 
 El siguiente paso es revisar esta documentación, incluso tenemos un
-tutorial básico para comenzar. Aquí hemos incluido mucha documentación
+:ref:`tutorial` para comenzar. Aquí hemos incluido mucha documentación
 sobre cómo funciona la biblioteca y todos los elementos que la componen.
