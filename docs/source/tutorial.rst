@@ -148,7 +148,7 @@ y permanece dibujado sin moverse.
 Para que el personaje interactúe, tendríamos que implementar el manejo de eventos.
 
 Los eventos en glucosa son administrados por la clase ``Events``, y se pueden
-conectar directamente a funciones para conocer el momento exácto de cada interacción
+conectar directamente a funciones para conocer el momento exacto de cada interacción
 del usuario.
 
 Agreguemos algo de código para que el personaje de nuestra prueba persiga al puntero
