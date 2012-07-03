@@ -1,5 +1,10 @@
+.. _api:
+
 API
 ===
+
+
+
 .. raw:: html
 
     <style>

@@ -43,6 +43,8 @@ Comencemos la estructura de un programa estilo ``glucosa``:
         juego = Game()
         gtk.main()
 
+.. image:: images/uno.png
+
 La primer parte del código realmente importante es ``juego = Game()`` y ``gtk.main()``. Estas
 dos lineas inician el juego y lo mantienen en funcionamiento (respectivamente).
 
@@ -57,7 +59,7 @@ MainLoop
 Los videojuegos son un poco especiales, si bien son programas cómo cualquier otro, funcionan
 de forma ligeramente diferente.
 
-En los programas convencionales, el funcionamiento está goberando por el usuario. El programa
+En los programas convencionales, el funcionamiento está gobernado por el usuario. El programa
 queda esperando a que el usuario haga algo, y cuando el usuario lo hace el programa
 responde.
 
@@ -65,22 +67,22 @@ En un videojuego es diferente, el videojuego tiene que hacer algo todo el tiempo
 tienen que caminar, las naves seguir volando etc.
 
 Aquí es donde entra en juego ``MainLoop``. Este objeto se encarga de mantener al juego
-activo, haciendo cosas todo el tiempo, independientemende de que el usuario inicie alguna
+activo, haciendo cosas todo el tiempo, independientemente de que el usuario inicie alguna
 acción. El objeto ``MainLoop`` espera ser iniciado con al menos dos parámetros::
 
         glucosa.MainLoop(controller, canvas, fps)
 
-- controller: es el objeto que se encargará de actualizar y redibujar la ventana, suele ser el mismo objeto que inicia el MainLoop. Es importante que el objeto que coloquemos ahí tenga los métodos ``on_update`` y ``on_draw``.
-- canvas: es un objeto ``gtk.DrawingArea``, se puede crear con la función ``glucosa.create_window`` o directamente
+- ``controller``: es el objeto que se encargará de actualizar y redibujar la ventana, suele ser el mismo objeto que inicia el MainLoop. Es importante que el objeto que coloquemos ahí tenga los métodos ``on_update`` y ``on_draw``.
+- ``canvas``: es un objeto ``gtk.DrawingArea``, se puede crear con la función ``glucosa.create_window`` o directamente
   usando ``gtk`` por nuestra cuenta.
-- fps: es un número entero, que indicará la velocidad de ejecución del juego. Es el acrónimo en inglés de "Frames Per Second", e indica cuantas veces se llamará a la función "on_update" por segundo. Poner esto a 60 es lo ideal, aunque algunos juegos usan 30 o incluso 24...
+- ``fps``: es un número entero, que indicará la velocidad de ejecución del juego. Es el acrónimo en inglés de "Frames Per Second", e indica cuantas veces se llamará a la función "on_update" por segundo. Poner esto a 60 es lo ideal, aunque algunos juegos usan 30 o incluso 24...
 
 
 Colocando al primer personaje
 -----------------------------
 
 Los personajes de glucosa se llaman ``sprites``, y consisten en objetos que representan
-un punto en la pantalla y tienen asociada una imágen.
+un punto en la pantalla y tienen asociada una imagen.
 
 Por ejemplo, para crear un ``Sprite`` podríamos escribir:
 
@@ -106,7 +108,7 @@ cada actualización. Ampliemos un poco el código inicial:
             self.mainloop = glucosa.MainLoop(self, self.canvas, fps=60)
     
             imagen = glucosa.Image('data/aceituna.png')
-            self.mi_sprite = glucosa.Sprite(imagen)
+            self.mi_sprite = glucosa.Sprite(imagen, 50, 50)
 
         def on_update(self):
             pass
@@ -118,6 +120,7 @@ cada actualización. Ampliemos un poco el código inicial:
         juego = Game()
         gtk.main()
 
+.. image:: images/dos.png
 
 Entonces, en pantalla tendríamos que ver al personaje es la esquina superior de
 la pantalla.
@@ -149,7 +152,7 @@ conectar directamente a funciones para conocer el momento exácto de cada intera
 del usuario.
 
 Agreguemos algo de código para que el personaje de nuestra prueba persiga al puntero
-del mouse:
+del ``mouse``:
 
 .. code-block:: python
 
@@ -232,9 +235,9 @@ dé vueltas sobre sí mismo:
 
 
 Con este cambio, el personaje comenzará a dar vueltas, a una velocidad de 60 grados por
-segundo, porque de hecho la función ``on_update`` se ejecuta a esa frecuencia (fps=60).
+segundo, porque de hecho la función ``on_update`` se ejecuta a esa frecuencia (``fps=60``).
 
-Es una buena idea dejar el valor fps en un valor fijo, y regular la velocidad mediante
+Es una buena idea dejar el valor ``fps`` en un valor fijo, y regular la velocidad mediante
 lógica de nuestro juego. Por ejemplo, si queremos que el personaje dé vueltas mas
 rápido podríamos escribir:
 
@@ -248,7 +251,9 @@ Muchos, muchos, muchos sprites!
 Glucosa no tiene límites de personajes, se pueden crear tanto cómo queramos.
 
 Así que para simplificar el manejo de personajes, se suele crear una lista
-y almacenar a todos los personajes ahí:
+y almacenar a todos los personajes ahí.
+
+El siguiente código genera 30 personajes:
 
 .. code-block:: python
 
@@ -256,6 +261,7 @@ y almacenar a todos los personajes ahí:
     import pygtk
     import gtk
     import glucosa
+    import random
 
     class Game:
 
@@ -264,11 +270,15 @@ y almacenar a todos los personajes ahí:
             self.mainloop = glucosa.MainLoop(self, self.canvas, fps=60)
 
             self.sprites = []
-            self.crear_un_personaje()
+
+            for x in range(30):
+                self.crear_un_personaje()
     
         def crear_un_personaje(self):
             imagen = glucosa.Image('data/aceituna.png')
-            mi_sprite = glucosa.Sprite(imagen)
+            x = random.randint(0, 200)
+            y = random.randint(0, 200)
+            mi_sprite = glucosa.Sprite(imagen, x, y)
             self.sprites.append(mi_sprite)
 
         def on_update(self):
@@ -283,6 +293,8 @@ y almacenar a todos los personajes ahí:
         juego = Game()
         gtk.main()
 
+.. image:: images/tres.png
+
 Con este código, cáda vez ques agregues un personaje a la lista ``sprites``, se dibujará
 sobre la escena y recibirá actualizaciones.
 
@@ -295,12 +307,12 @@ Finalizando... ¡No olvides ver la API!
 
 Es importante comentar que tanto la clase ``Sprite`` cómo ``Events`` tienen
 mucha mas funcionalidad de la que comentamos aquí. Incluso hay
-muchisimas funcionalidades que no hemos siquiera comentado: colisiones, dibujado
+muchísimas funcionalidades que no hemos siquiera comentado: colisiones, dibujado
 geométrico, animaciones, manejo de teclado etc...
 
 Este tutorial es muy breve, su objetivo es ayudar a dar los primeros pasos
-con glucosa y explorar a grandes razgos la API.
+con glucosa y explorar a grandes rasgos la API, pero hay mucho mas por conocer.
 
 Para una descripción mas completa de toda la funcionalidad de glucosa, te recomendamos
-investigar la sección API, donde definimos todos los elementos que componen a glucosa
+investigar la :ref:`api`, donde definimos todos los elementos que componen a glucosa
 y cómo utilizarlos.
