@@ -60,7 +60,7 @@ class Game:
             self.actor_animado.y += 1
 
     def crear_actor(self, x , y):
-        self.actores.append(glucosa.Sprite(glucosa.Image('data/aceituna.png'), x, y))
+        self.actores.append(glucosa.Sprite(glucosa.Image('../data/aceituna.png'), x, y))
 
     def on_update(self):
         self.actor_animado.update()
