@@ -300,6 +300,16 @@ class Text:
                                                          self.face)
             dy += text_height
 
+class FPS(Text):
+
+    def __init__(self, mainloop, x, y):
+        Text.__init__(self, "FPS: ?", x, y)
+        assert isinstance(mainloop, MainLoop)
+        self.mainloop = mainloop
+
+    def update(self):
+        pass
+
 class Singleton(type):
     """Clase para garantizar que una clase sólo tenga una instancia y
     proporcionar un punto de acceso global a ella.

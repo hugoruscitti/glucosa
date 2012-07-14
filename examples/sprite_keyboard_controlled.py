@@ -94,10 +94,15 @@ class Game:
         self.events = glucosa.Events(self.canvas)
         self.sprites = []
         self._create_player()
+        self._create_fps()
 
     def _create_player(self):
         player = Player(self.events)
         self.sprites.append(player)
+
+    def _create_fps(self):
+        fps = glucosa.FPS(self.mainloop, 20, 20)
+        self.sprites.append(fps)
 
     def on_update(self):
         for sprite in self.sprites:
