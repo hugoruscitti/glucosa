@@ -1,0 +1,7 @@
+[Activity]
+name = ActivityTemplate
+activity_version = 1
+bundle_id = org.sugarlabs.ActivityTemplate
+exec = sugar-activity activity.ActivityTemplate
+icon = activity-helloworld
+license = GPLv2+
