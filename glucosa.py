@@ -8,6 +8,7 @@ import math
 import gobject
 import pygtk
 import gtk
+import time
 
 def fill(context, color, size):
     """Pinta un contexto con un color y tamaño determinado."""
@@ -306,9 +307,17 @@ class FPS(Text):
         Text.__init__(self, "FPS: ?", x, y)
         assert isinstance(mainloop, MainLoop)
         self.mainloop = mainloop
+        self.tick = time.time()
+        self.fps = 0
 
     def update(self):
-        pass
+        self.fps += 1
+        dt = time.time() - self.tick
+
+        if dt > 1:
+            self.tick += 1
+            self.text = "FPS: %d" %(self.fps)
+            self.fps = 0
 
 class Singleton(type):
     """Clase para garantizar que una clase sólo tenga una instancia y
