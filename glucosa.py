@@ -117,19 +117,6 @@ def create_window():
     window.connect('destroy', gtk.main_quit)
     canvas = gtk.DrawingArea()
 
-    # Añadimos lo eventos que queremos capturar.
-    # Esta operación se debe hacer previamente a añadir el DrawingArea a
-    # la ventana.
-    canvas.set_events(  gtk.gdk.BUTTON_PRESS_MASK
-                      | gtk.gdk.BUTTON_RELEASE_MASK
-                      | gtk.gdk.KEY_RELEASE_MASK
-                      | gtk.gdk.KEY_PRESS_MASK
-                      | gtk.gdk.POINTER_MOTION_MASK)
-
-    # Perimitmos que el DrawingArea tenga el foco para poder capturar los
-    # eventos del teclado.
-    canvas.set_flags (gtk.CAN_FOCUS)
-
     window.add(canvas)
     window.show_all()
 
@@ -179,7 +166,7 @@ class Frame(Image):
         self.frame_limit = cols * rows
         self.frame_width = self.surface.get_width() / self.cols
         self.frame_height = self.surface.get_height() / self.rows
-        
+
         self.width = self.frame_width
         self.height = self.frame_height
 
@@ -277,8 +264,8 @@ class Sprite:
     def collision_with(self, sprite):
         "Retorna True si el sprite colisiona con otro sprite."
         return _range_between_two_points(self.get_center(), sprite.get_center()) < self.radius + sprite.radius
-        
-        
+
+
 class Text:
     """Muestra un texto en la pantalla.
 
@@ -405,7 +392,7 @@ class Events(_EventsManager, object):
 
 
     Los posibles eventos a los que se puede conectar un metodo son:
-        
+
     - on_mouse_move ( al mover el raton por la pantalla ).
     - on_mouse_button_pressed ( al soltar un botón del ratón ).
     - on_mouse_button_released ( al presionar un btoón del ratón ).
@@ -413,7 +400,7 @@ class Events(_EventsManager, object):
     - on_mouse_scroll_down ( al mover la rueda central del raton hacia abajo ).
     - on_key_pressed ( al pulsar una tecla ).
     - on_key_released ( al soltar una tecla ).
-    
+
     """
 
     # Solo puede existir una instancia de este objeto en el programa.
@@ -472,8 +459,8 @@ class Events(_EventsManager, object):
         return True
 
     def is_pressed(self, key):
-        """ Comprueba si una tecla está pulsada 
-        
+        """ Comprueba si una tecla está pulsada
+
         >>> if (self.events.is_pressed(glucosa.Events.K_b)):
         >>>    print "Ha spulsado la tecla b."
         """
@@ -674,6 +661,13 @@ class MainLoop:
     def __init__(self, controller, widget, fps=60):
         self.fps = fps
         self._set_controller(controller, widget)
+        widget.set_events(  gtk.gdk.BUTTON_PRESS_MASK
+                          | gtk.gdk.BUTTON_RELEASE_MASK
+                          | gtk.gdk.KEY_RELEASE_MASK
+                          | gtk.gdk.KEY_PRESS_MASK
+                          | gtk.gdk.POINTER_MOTION_MASK)
+
+        widget.set_flags (gtk.CAN_FOCUS)
 
     def _set_controller(self, controller, widget):
         self.controller = controller
