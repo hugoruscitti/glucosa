@@ -49,14 +49,20 @@ def blit_surface(context, surface, x, y, src_x=0, src_y=0, src_width=None, src_h
 
     _blit(context, surface, src_x, src_y, src_width, src_height)
 
+    (x0, y0, x1, y1) = context.path_extents()
+    context.fill()
+
     context.restore()
     context.restore()
+
+    return (x0+x-anchor_x, y0+y-anchor_y, x1*scale, y1*scale)
+    #fill(context, (255, 0, 0), (x, y, w, h))
 
 def _blit(context, surface, src_x, src_y, src_width, src_height):
     "Dibuja una porción de imagen en el contexto del canvas."
     context.set_source_surface(surface, 0-src_x, 0-src_y)
     context.rectangle(0, 0, src_width, src_height)
-    context.fill()
+
 
 def load_surface(path):
     """Genera una superficie a partir de un archivo .png"""
@@ -139,7 +145,7 @@ class Image:
         self.height = self.surface.get_height()
 
     def blit(self, context, x, y, scale=1, rotation=0, anchor_x=0, anchor_y=0, flip=False):
-        blit_surface(context, self.surface, x, y,
+        return blit_surface(context, self.surface, x, y,
                               scale=scale, rotation=rotation,
                               anchor_x=anchor_x, anchor_y=anchor_y,
                               flip=flip)
@@ -178,7 +184,7 @@ class Frame(Image):
         self.frame_index = index
 
     def blit(self, context, x, y, scale=1, rotation=0, anchor_x=0, anchor_y=0, flip=False):
-        blit_surface(context, self.surface, x, y,
+        return blit_surface(context, self.surface, x, y,
                              self.frame_coordinates[int(self.frame_index)][0],
                              self.frame_coordinates[int(self.frame_index)][1],
                              self.frame_width, self.frame_height,
@@ -249,7 +255,7 @@ class Sprite:
 
     def draw(self, context):
         """ Dibuja un el sprite en el contexto """
-        self.image.blit(context, self.x, self.y, scale=self.scale, rotation=self.rotation, anchor_x=self.anchor_x, anchor_y=self.anchor_y, flip=self.flip)
+        return self.image.blit(context, self.x, self.y, scale=self.scale, rotation=self.rotation, anchor_x=self.anchor_x, anchor_y=self.anchor_y, flip=self.flip)
 
     def update(self):
         """ Actualiza el estado de la animación del Sprite si el Sprite contiene un Frame,
@@ -714,6 +720,8 @@ class MainLoop:
 
         # Muestra el contenido del back_buffer en pantalla
         blit_surface(window_context, back_buffer, 0, 0)
+
+        self.widget.window.invalidate_rect((0,0,10,10), False)
 
         #rect = gtk.gdk.Rectangle(0, 0, 50, 50)
         #self.widget.window.invalidate_rect(rect, True)

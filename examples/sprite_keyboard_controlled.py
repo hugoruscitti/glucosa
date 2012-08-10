@@ -96,6 +96,7 @@ class Game:
         self.sprites = []
         self._create_player()
         self._create_fps()
+        self.pencil = glucosa.Pencil()
 
     def _create_player(self):
         player = Player(self.events)
@@ -111,7 +112,11 @@ class Game:
 
     def on_draw(self, context):
         for sprite in self.sprites:
-            sprite.draw(context)
+            area = sprite.draw(context)
+
+            if area:
+                self.pencil.draw_box(context, area[0], area[1], area[2], area[3])
+
 
 if __name__ == '__main__':
     juego = Game()
