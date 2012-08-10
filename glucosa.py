@@ -702,9 +702,18 @@ class MainLoop:
         return True
 
     def _on_draw(self, widget, event):
-        context = self.widget.window.cairo_create()
-        #window_size = self.widget.get_window().get_size()
-        fill(context, (50,50,50), (100, 100))
+        window_context = self.widget.window.cairo_create()
+
+        # NOTE: el tamaño tiene que ser (event.area.width, event.area.height).
+        back_buffer = cairo.ImageSurface(cairo.FORMAT_ARGB32, 200, 200)
+        context = cairo.Context(back_buffer)
+
+        # NOTE: Hacer esto solo en los rectangulos anteriores.
+        fill(context, (0,50,50), (100, 100))
         self.controller.on_draw(context)
+
+        # Muestra el contenido del back_buffer en pantalla
+        blit_surface(window_context, back_buffer, 0, 0)
+
         #rect = gtk.gdk.Rectangle(0, 0, 50, 50)
         #self.widget.window.invalidate_rect(rect, True)
