@@ -90,7 +90,8 @@ class Game:
 
     def __init__(self):
         (self.window, self.canvas) = glucosa.create_window()
-        self.mainloop = glucosa.MainLoop(self, self.canvas, fps=60)
+        self.window.maximize()
+        self.mainloop = glucosa.MainLoop(self, self.canvas, fps=160)
         self.events = glucosa.Events(self.canvas)
         self.sprites = []
         self._create_player()

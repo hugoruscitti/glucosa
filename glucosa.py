@@ -687,6 +687,8 @@ class MainLoop:
                           | gtk.gdk.POINTER_MOTION_MASK)
 
         widget.set_flags (gtk.CAN_FOCUS)
+        widget.set_app_paintable(True)
+        widget.set_double_buffered(False)
 
     def _set_controller(self, controller, widget):
         self.controller = controller
@@ -699,8 +701,10 @@ class MainLoop:
         gobject.idle_add(self.widget.queue_draw)
         return True
 
-    def _on_draw(self, event, a):
+    def _on_draw(self, widget, event):
         context = self.widget.window.cairo_create()
-        window_size = self.widget.get_window().get_size()
-        fill(context, (50,50,50), window_size)
+        #window_size = self.widget.get_window().get_size()
+        fill(context, (50,50,50), (100, 100))
         self.controller.on_draw(context)
+        #rect = gtk.gdk.Rectangle(0, 0, 50, 50)
+        #self.widget.window.invalidate_rect(rect, True)
