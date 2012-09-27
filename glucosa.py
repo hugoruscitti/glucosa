@@ -669,7 +669,10 @@ class GameArea(gtk.DrawingArea):
                 
         self.sprites = []
     
-        # FIXME: No usar un timeout, redibujar a demanda
+        # FIXME: No es necesaro llamar a queue_draw cada un tiempo
+        #        la forma correcta de hacerlo es llamarlo solo cuando
+        #        vamos a dibujar algo nuevo, esta es una de las principales
+        #        causas por la que la libreria puede funcionar lento. 
         self.fps = fps
         gobject.timeout_add(1000/self.fps, self._update)
         self.connect("expose-event", self._on_draw)
@@ -695,10 +698,6 @@ class GameArea(gtk.DrawingArea):
         for sprite in self.sprites:
             sprite.update()
         
-        # FIXME: No es necesaro llamar a queue_draw cada un tiempo
-        #        la forma correcta de hacerlo es llamarlo solo cuando
-        #        vamos a dibujar algo nuevo, esta es una de las principales
-        #        causas por la que la libreria puede funcionar lento. 
         gobject.idle_add(self.queue_draw)
         return True
 
