@@ -112,7 +112,7 @@ def create_window():
     """
     window = gtk.Window()
     window.connect('destroy', gtk.main_quit)
-    canvas = gtk.DrawingArea()
+    canvas = GameArea()
 
     window.add(canvas)
     window.show_all()
@@ -647,38 +647,55 @@ class Pencil:
 
         context.stroke()
 
-class MainLoop:
-    """Representa el bucle principal de un juego.
-
-    Tiene un metodo especial llamado set_controller, en donde
-    uno tiene que especificar el objeto que quiere colocar cómo
-    administrador del juego.
+class GameArea(gtk.DrawingArea):
+    """Es el area donde el juego se dibujara
+    
+    Permite ser embebida en cualquier contenedor de gtk, ya que es un
+    widget.
+    
+    Emite un señal en cada actualizacion y en cada redibujado
+    que pueden ser usadas de la siguiente forma:
+        >>> area.connect('update', funcion_a_llamar)
+        >>> area.connect('draw', funcion_a_llamar)
     """
 
-    def __init__(self, controller, widget, fps=60):
+    __gsignals__ = {
+             'update': (gobject.SIGNAL_RUN_FIRST, None, []),
+             'draw': (gobject.SIGNAL_RUN_FIRST, None, [object]),
+                               }
+
+    def __init__(self, fps=60):
+        gtk.DrawingArea.__init__(self)
+                
+        # FIXME: No usar un timeout, redibujar a demanda
         self.fps = fps
-        self._set_controller(controller, widget)
-        widget.set_events(  gtk.gdk.BUTTON_PRESS_MASK
+        gobject.timeout_add(1000/self.fps, self._update)
+        self.connect("expose-event", self._on_draw)
+        
+        self.set_events(  gtk.gdk.BUTTON_PRESS_MASK
                           | gtk.gdk.BUTTON_RELEASE_MASK
                           | gtk.gdk.KEY_RELEASE_MASK
                           | gtk.gdk.KEY_PRESS_MASK
                           | gtk.gdk.POINTER_MOTION_MASK)
 
-        widget.set_flags (gtk.CAN_FOCUS)
-
-    def _set_controller(self, controller, widget):
-        self.controller = controller
-        self.widget = widget
-        gobject.timeout_add(1000/self.fps, self._update)
-        self.widget.connect("expose-event", self._on_draw)
+        self.set_flags (gtk.CAN_FOCUS)
 
     def _update(self):
-        self.controller.on_update()
-        gobject.idle_add(self.widget.queue_draw)
+        # Emite la señal, llamando a todas las funciones que esten conectadas
+        # en este caso no pasa argumentos.
+        self.emit('update')
+        
+        # FIXME: No es necesaro llamar a queue_draw cada un tiempo
+        #        la forma correcta de hacerlo es llamarlo solo cuando
+        #        vamos a dibujar algo nuevo, esta es una de las principales
+        #        causas por la que la libreria puede funcionar lento. 
+        gobject.idle_add(self.queue_draw)
         return True
 
-    def _on_draw(self, event, a):
-        context = self.widget.window.cairo_create()
-        window_size = self.widget.get_window().get_size()
+    def _on_draw(self, widget, event):
+        context = self.window.cairo_create()
+        window_size = self.get_window().get_size()
         fill(context, (50,50,50), window_size)
-        self.controller.on_draw(context)
+        
+        # Emite la señal enviando el context como un argumento
+        self.emit('draw', context)

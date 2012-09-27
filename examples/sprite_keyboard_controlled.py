@@ -90,7 +90,8 @@ class Game:
 
     def __init__(self):
         (self.window, self.canvas) = glucosa.create_window()
-        self.mainloop = glucosa.MainLoop(self, self.canvas, fps=60)
+        self.canvas.connect('update', self.on_update)
+        self.canvas.connect('draw', self.on_draw)
         self.events = glucosa.Events(self.canvas)
         self.sprites = []
         self._create_player()
@@ -99,11 +100,11 @@ class Game:
         player = Player(self.events)
         self.sprites.append(player)
 
-    def on_update(self):
+    def on_update(self, area):
         for sprite in self.sprites:
             sprite.update()
 
-    def on_draw(self, context):
+    def on_draw(self, area, context):
         for sprite in self.sprites:
             sprite.draw(context)
 

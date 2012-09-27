@@ -20,7 +20,8 @@ class Game:
 
     def __init__(self):
         (self.window, self.canvas) = glucosa.create_window()
-        self.mainloop = glucosa.MainLoop(self, self.canvas, fps=60)
+        self.canvas.connect('update', self.on_update)
+        self.canvas.connect('draw', self.on_draw)
 
         image = glucosa.Image('../data/aceituna.png')
         self.sprite = glucosa.Sprite(image, 100, 100, 18, 18, scale=2)
@@ -36,11 +37,11 @@ class Game:
         if (self.sprite.scale < 1):
             self.sprite.scale = 1
 
-    def on_update(self):
+    def on_update(self, area):
         self.sprite.rotation += 1
         self.sprite.update()
 
-    def on_draw(self, context):
+    def on_draw(self, area, context):
         self.sprite.draw(context)
 
 if __name__ == '__main__':

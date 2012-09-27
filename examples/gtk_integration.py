@@ -40,7 +40,7 @@ class MainWindow:
         self.vbox = gtk.VBox(False, 6)     
         
     def crear_area_dibujo(self): 
-        self.area = gtk.DrawingArea()
+        self.area = glucosa.GameArea()
         self.area.set_size_request(400,150)
     
     
@@ -163,17 +163,19 @@ class MainWindow:
         # Mostramos los controles.
         self.window.show_all()
         
-        # --- CLUCOSA ---        
-        self.mainloop = glucosa.MainLoop(self, self.area, fps=60)
+        # --- CLUCOSA ---
+        self.area.connect('update', self.on_update)
+        self.area.connect('draw', self.on_draw)
+            
         image = glucosa.Image('../data/glucosa_logo.png')
         self.sprite = glucosa.Sprite(image, 200, 75, 18, 18)
         self.sprite.anchor_x = 30
         self.sprite.anchor_y = 38
         
-    def on_update(self):
+    def on_update(self, area):
         self.sprite.update()
     
-    def on_draw(self, context):
+    def on_draw(self, area, context):
         self.sprite.draw(context)
 
     def main(self):

@@ -18,7 +18,8 @@ class Game:
 
     def __init__(self):
         (self.window, self.canvas) = glucosa.create_window()
-        self.mainloop = glucosa.MainLoop(self, self.canvas, fps=60)
+        self.canvas.connect('update', self.on_update)
+        self.canvas.connect('draw', self.on_draw)
 
         image = glucosa.Image('../data/aceituna.png')
         self.events = glucosa.Events(self.canvas)
@@ -32,10 +33,10 @@ class Game:
         self.mouse_x = event['x']
         self.mouse_y = event['y']
 
-    def on_update(self):
+    def on_update(self, area):
         pass
 
-    def on_draw(self, context):
+    def on_draw(self, area, context):
         self.lapiz.draw_line(context, 10, 10, 100, 100, 1)
         self.lapiz.draw_circle(context, self.mouse_x, self.mouse_y, 10)
         self.lapiz.draw_arc(context, 100, 120, 60, 0, 180)
