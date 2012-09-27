@@ -667,6 +667,8 @@ class GameArea(gtk.DrawingArea):
     def __init__(self, fps=60):
         gtk.DrawingArea.__init__(self)
                 
+        self.sprites = []
+    
         # FIXME: No usar un timeout, redibujar a demanda
         self.fps = fps
         gobject.timeout_add(1000/self.fps, self._update)
@@ -680,10 +682,18 @@ class GameArea(gtk.DrawingArea):
 
         self.set_flags (gtk.CAN_FOCUS)
 
+    def add_sprite(self, sprite):
+        """Agrega un sprite a el area de juego"""
+        self.sprites.append(sprite)
+
     def _update(self):
         # Emite la señal, llamando a todas las funciones que esten conectadas
         # en este caso no pasa argumentos.
         self.emit('update')
+        
+        # Se actualizan los sprites
+        for sprite in self.sprites:
+            sprite.update()
         
         # FIXME: No es necesaro llamar a queue_draw cada un tiempo
         #        la forma correcta de hacerlo es llamarlo solo cuando
@@ -696,6 +706,10 @@ class GameArea(gtk.DrawingArea):
         context = self.window.cairo_create()
         window_size = self.get_window().get_size()
         fill(context, (50,50,50), window_size)
+        
+        # Se encarga de dibujar los sprites
+        for sprite in self.sprites:
+            sprite.draw(context)
         
         # Emite la señal enviando el context como un argumento
         self.emit('draw', context)

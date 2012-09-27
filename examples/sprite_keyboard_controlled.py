@@ -90,23 +90,14 @@ class Game:
 
     def __init__(self):
         (self.window, self.canvas) = glucosa.create_window()
-        self.canvas.connect('update', self.on_update)
-        self.canvas.connect('draw', self.on_draw)
         self.events = glucosa.Events(self.canvas)
         self.sprites = []
         self._create_player()
 
     def _create_player(self):
         player = Player(self.events)
-        self.sprites.append(player)
+        self.canvas.add_sprite(player)
 
-    def on_update(self, area):
-        for sprite in self.sprites:
-            sprite.update()
-
-    def on_draw(self, area, context):
-        for sprite in self.sprites:
-            sprite.draw(context)
 
 if __name__ == '__main__':
     juego = Game()
