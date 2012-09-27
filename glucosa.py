@@ -6,6 +6,7 @@ import math
 import gobject
 import gtk
 
+
 def fill(context, color, size):
     """Pinta un contexto con un color y tamaño determinado."""
     context.set_source_rgba(*color)
@@ -211,7 +212,8 @@ class Frame(Image):
 
         return False
 
-class Sprite:
+
+class Sprite(gobject.GObject):
     """Representa a un personaje con apariencia de imagen o animación.
 
         >>> imagen = glucosa.Image('data/aceituna.png')
@@ -232,7 +234,11 @@ class Sprite:
     - flip -- espejado horizontal.
     """
 
+    __gsignals__ = {
+             'update': (gobject.SIGNAL_RUN_FIRST, None, [])}
+             
     def __init__(self, image, x, y, anchor_x=0, anchor_y=0, scale=1, rotation=0, flip=False):
+        gobject.GObject.__init__(self)
         self.image = image
         self.x = x
         self.y = y
@@ -242,6 +248,46 @@ class Sprite:
         self.rotation = rotation
         self.flip = flip
         self.radius = (max(self.image.width, self.image.height) / 2)
+
+    def set_pos(self, x = -1, y = -1):
+        """Define la posicion del personaje"""
+        if x >= 0:
+            self.x = x
+        
+        if y >= 0:
+            self.y = y
+        self.emit('update')
+        
+    def move(self, mx=0, my=0):
+        """Mueve el personaje basandose en la posicion actual
+        Ejemplo:
+        >>> sprite.move(-10, 0) # Disminuira 10 pixels en x
+        >>> sprite.move(0, +10) # Aumentara 10 pixels en y"""
+        self.x += mx
+        self.y += mx
+                
+    def set_anchor(self, x = -1, y = -1):
+        """Define el punto de control del personaje"""
+        if x >= 0:
+            self.anchor_x = x
+        
+        if y >= 0:
+            self.anchor_y = y
+        self.emit('update')
+
+    def set_rotation(self, rotation):
+        """Rota el personaje, en grados"""
+        self.rotation = rotation
+        self.emit('update')
+
+    def set_flip(self, flip):
+        """Espejado horizontal"""
+        self.flip = flip
+        self.emit('update')
+
+    def set_image(self, image):
+        self.image = image
+        self.emit('update')
 
     def draw(self, context):
         """ Dibuja un el sprite en el contexto """
@@ -648,7 +694,7 @@ class Pencil:
         context.stroke()
 
 class GameArea(gtk.DrawingArea):
-    """Es el area donde el juego se dibujara
+    """Es el area donde el juego se dibujará
     
     Permite ser embebida en cualquier contenedor de gtk, ya que es un
     widget.
@@ -664,17 +710,11 @@ class GameArea(gtk.DrawingArea):
              'draw': (gobject.SIGNAL_RUN_FIRST, None, [object]),
                                }
 
-    def __init__(self, fps=60):
+    def __init__(self):
         gtk.DrawingArea.__init__(self)
                 
         self.sprites = []
-    
-        # FIXME: No es necesaro llamar a queue_draw cada un tiempo
-        #        la forma correcta de hacerlo es llamarlo solo cuando
-        #        vamos a dibujar algo nuevo, esta es una de las principales
-        #        causas por la que la libreria puede funcionar lento. 
-        self.fps = fps
-        gobject.timeout_add(1000/self.fps, self._update)
+        
         self.connect("expose-event", self._on_draw)
         
         self.set_events(  gtk.gdk.BUTTON_PRESS_MASK
@@ -688,8 +728,9 @@ class GameArea(gtk.DrawingArea):
     def add_sprite(self, sprite):
         """Agrega un sprite a el area de juego"""
         self.sprites.append(sprite)
+        sprite.connect('update', self._update)
 
-    def _update(self):
+    def _update(self, *args):
         # Emite la señal, llamando a todas las funciones que esten conectadas
         # en este caso no pasa argumentos.
         self.emit('update')

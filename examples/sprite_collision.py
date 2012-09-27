@@ -31,13 +31,14 @@ class Game:
         self.sprite2 = glucosa.Sprite(image, 60, 40, 18, 18)
         self.texto_colision = glucosa.Text('', 10, 100, face='Arial', size=18,
                                            color = (255, 0, 0))
+                                           
+        self.canvas.add_sprite(self.sprite)
+        self.canvas.add_sprite(self.sprite2)
 
     def move_sprite(self, event):
-        self.sprite.x = event['x']
-        self.sprite.y = event['y']
+        self.sprite.set_pos(event['x'], event['y'])
 
     def on_update(self, area):
-        self.sprite.update()
         if (self.sprite.collision_with(self.sprite2)):
             self.texto_colision.text = "¡COLISION!"
         else:
@@ -45,8 +46,6 @@ class Game:
 
 
     def on_draw(self, area, context):
-        self.sprite.draw(context)
-        self.sprite2.draw(context)
         self.texto_colision.draw(context)
 
 if __name__ == '__main__':
