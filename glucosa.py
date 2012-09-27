@@ -1,12 +1,9 @@
 # -*- encoding: utf-8 -*-
 import cairo
 import os
-import pygst
-pygst.require("0.10")
-import gst, gtk
+import gst
 import math
 import gobject
-import pygtk
 import gtk
 
 def fill(context, color, size):
