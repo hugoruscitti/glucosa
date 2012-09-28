@@ -236,7 +236,7 @@ class Sprite(gobject.GObject):
 
     __gsignals__ = {
              'update': (gobject.SIGNAL_RUN_FIRST, None, [])}
-             
+
     def __init__(self, image, x, y, anchor_x=0, anchor_y=0, scale=1, rotation=0, flip=False):
         gobject.GObject.__init__(self)
         self.image = image
@@ -249,15 +249,14 @@ class Sprite(gobject.GObject):
         self.flip = flip
         self.radius = (max(self.image.width, self.image.height) / 2)
 
-    def set_pos(self, x = -1, y = -1):
+    def set_pos(self, x=None, y=None):
         """Define la posicion del personaje"""
-        if x != -1:
+        if x:
             self.x = x
-        
-        if y != -1:
+
+        if y:
             self.y = y
-        self.emit('update')
-        
+
     def move(self, mx=0, my=0):
         """Mueve el personaje basandose en la posicion actual
         Ejemplo:
@@ -265,13 +264,12 @@ class Sprite(gobject.GObject):
         >>> sprite.move(0, +10) # Aumentara 10 pixels en y"""
         self.x += mx
         self.y += mx
-        self.emit('update')
-                
+
     def set_anchor(self, x = -1, y = -1):
         """Define el punto de control del personaje"""
         if x >= 0:
             self.anchor_x = x
-        
+
         if y >= 0:
             self.anchor_y = y
         self.emit('update')
@@ -283,14 +281,19 @@ class Sprite(gobject.GObject):
 
     def set_flip(self, flip):
         """Espejado horizontal"""
-        self.flip = flip
+        self._flip = flip
         self.emit('update')
+
+    def get_flip(self):
+        return self._flip
+
+    flip = property(get_flip, set_flip, doc="Espejado horizontal")
 
     def set_image(self, image):
         """Define la imagen del sprite"""
         self.image = image
         self.emit('update')
-        
+
     def set_scale(self, scale):
         """Escalar el sprite"""
         self.scale = scale
@@ -298,7 +301,7 @@ class Sprite(gobject.GObject):
 
     def draw(self, context):
         """ Dibuja un el sprite en el contexto """
-        self.image.blit(context, self.x, self.y, scale=self.scale, rotation=self.rotation, anchor_x=self.anchor_x, anchor_y=self.anchor_y, flip=self.flip)
+        self.image.blit(context, self._x, self._y, scale=self.scale, rotation=self.rotation, anchor_x=self.anchor_x, anchor_y=self.anchor_y, flip=self._flip)
 
     def update(self):
         """ Actualiza el estado de la animación del Sprite si el Sprite contiene un Frame,
@@ -314,6 +317,23 @@ class Sprite(gobject.GObject):
     def collision_with(self, sprite):
         "Retorna True si el sprite colisiona con otro sprite."
         return _range_between_two_points(self.get_center(), sprite.get_center()) < self.radius + sprite.radius
+
+    def set_x(self, x):
+        self._x = x
+        self.emit('update')
+
+    def set_y(self, y):
+        self._y = y
+        self.emit('update')
+
+    def get_x(self):
+        return self._x
+
+    def get_y(self):
+        return self._y
+
+    x = property(get_x, set_x, doc="Define la posicion horizonal")
+    y = property(get_y, set_y, doc="Define la posicion vertical")
 
 
 class Text:
@@ -702,10 +722,10 @@ class Pencil:
 
 class GameArea(gtk.DrawingArea):
     """Es el area donde el juego se dibujará
-    
+
     Permite ser embebida en cualquier contenedor de gtk, ya que es un
     widget.
-    
+
     Emite un señal en cada actualizacion y en cada redibujado
     que pueden ser usadas de la siguiente forma:
         >>> area.connect('update', funcion_a_llamar)
@@ -719,12 +739,12 @@ class GameArea(gtk.DrawingArea):
 
     def __init__(self):
         gtk.DrawingArea.__init__(self)
-                
+
         self.sprites = []
         self._timeout = None
-        
+
         self.connect("expose-event", self._on_draw)
-        
+
         self.set_events(  gtk.gdk.BUTTON_PRESS_MASK
                           | gtk.gdk.BUTTON_RELEASE_MASK
                           | gtk.gdk.KEY_RELEASE_MASK
@@ -750,11 +770,11 @@ class GameArea(gtk.DrawingArea):
         # Emite la señal, llamando a todas las funciones que esten conectadas
         # en este caso no pasa argumentos.
         self.emit('update')
-        
+
         # Se actualizan los sprites
         for sprite in self.sprites:
             sprite.update()
-        
+
         gobject.idle_add(self.queue_draw)
         return True
 
@@ -762,10 +782,10 @@ class GameArea(gtk.DrawingArea):
         context = self.window.cairo_create()
         window_size = self.get_window().get_size()
         fill(context, (50,50,50), window_size)
-        
+
         # Se encarga de dibujar los sprites
         for sprite in self.sprites:
             sprite.draw(context)
-        
+
         # Emite la señal enviando el context como un argumento
         self.emit('draw', context)

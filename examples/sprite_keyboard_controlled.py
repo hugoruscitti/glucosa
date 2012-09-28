@@ -47,8 +47,6 @@ class WalkState(State):
                 self.player.flip = True
             else:
                 self.player.set_state(StandState(self.player))
-        # Actualizar todo despues de hacer los cambios
-        self.player.emit('update')
 
 class Player(glucosa.Sprite):
 
