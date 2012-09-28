@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright 2009 Simon Schampijer
 #
 # This program is free software; you can redistribute it and/or modify
@@ -72,30 +73,37 @@ class ActivityTemplate(activity.Activity):
 
         # Code changes made by glucosa team, the three lines
         # makes the game graphic area.
-        canvas = gtk.DrawingArea()
-        self.game = Game(canvas)
-        self.set_canvas(canvas)
+        self.game = Game()
+        self.set_canvas(self.game)
 
         canvas.show()
 
 class Game:
-    """Es el administrador del juego."""
+    """Es el administrador del juego.
 
-    def __init__(self, canvas):
-        self.mainloop = glucosa.MainLoop(self, canvas, fps=30)
+    Su método ``on_update`` se llamará pedioricamente para mantener
+    la velocidad constante del juego. Y el método ``on_draw`` será
+    llamado tantas veces como sea posible."""
 
-        image = glucosa.Image('./aceituna.png')
-        self.sprite = glucosa.Sprite(image, 0, 0, 18, 18, scale=1)
-        self.sprite.rotation = 40
-        self.events = glucosa.Events(canvas)
-        self.events.on_mouse_move += self.move_sprite
+    def __init__(self):
+        (self.window, self.canvas) = glucosa.create_window()
+        self.canvas.connect('update', self.on_update)
+        self.canvas.set_update_loop(60)
+        
+        image = glucosa.Image('../data/aceituna.png')
+        self.sprite = glucosa.Sprite(image, 100, 100, 18, 18, scale=2)
+        self.canvas.add_sprite(self.sprite)
+        self.events = glucosa.Events(self.canvas)
+        self.events.on_mouse_scroll_up += self.rueda_del_raton_arriba
+        self.events.on_mouse_scroll_down += self.rueda_del_raton_abajo
 
-    def move_sprite(self, event):
-        self.sprite.x = event['x']
-        self.sprite.y = event['y']
+    def rueda_del_raton_arriba(self, evento):
+        self.sprite.set_scale(0.1)
 
-    def on_update(self):
-        self.sprite.update()
+    def rueda_del_raton_abajo(self, evento):
+        self.sprite.set_scale(self.sprite.scale - 0.1)
+        if (self.sprite.scale < 1):
+            self.sprite.set_scale(1)
 
-    def on_draw(self, context):
-        self.sprite.draw(context)
+    def on_update(self, area):
+        self.sprite.rotation += 1
