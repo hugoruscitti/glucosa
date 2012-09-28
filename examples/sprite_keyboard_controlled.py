@@ -23,7 +23,7 @@ class StandState(State):
 
     def __init__(self, player):
         State.__init__(self, player)
-        self.player.image = self.player.image_stand
+        self.player.set_image(self.player.image_stand)
 
     def update(self):
         if self.player.left_pressed or self.player.right_pressed:
@@ -33,7 +33,7 @@ class WalkState(State):
 
     def __init__(self, player):
         State.__init__(self, player)
-        self.player.image = self.player.image_walk
+        self.player.set_image(self.player.image_walk)
 
     def update(self):
         self.player.image.advance(0.25)
@@ -47,7 +47,8 @@ class WalkState(State):
                 self.player.flip = True
             else:
                 self.player.set_state(StandState(self.player))
-
+        # Actualizar todo despues de hacer los cambios
+        self.player.emit('update')
 
 class Player(glucosa.Sprite):
 
@@ -55,7 +56,6 @@ class Player(glucosa.Sprite):
         self.image_stand = glucosa.Image("../data/ayni_parado.png")
         self.image_walk = glucosa.Frame("../data/ayni_camina.png", cols=4)
         glucosa.Sprite.__init__(self, self.image_stand, 75, 125, anchor_x=50, anchor_y=100)
-
         self.set_state(StandState(self))
 
         # conecta los eventos
@@ -68,9 +68,6 @@ class Player(glucosa.Sprite):
     def set_state(self, state):
         self.state = state
 
-    def update(self):
-        self.state.update()
-
     def on_key_down(self):
         self.update_control_state()
 
@@ -80,6 +77,7 @@ class Player(glucosa.Sprite):
     def update_control_state(self):
         self.left_pressed = self.events.is_pressed(glucosa.Events.K_LEFT)
         self.right_pressed = self.events.is_pressed(glucosa.Events.K_RIGHT)
+        self.state.update()
 
 class Game:
     """Es el administrador del juego.

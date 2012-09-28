@@ -15,16 +15,16 @@ class MainWindow:
         gtk.main_quit()
         
     def cambio_rotacion(self, adjustment):
-        self.sprite.rotation = adjustment.get_value()
+        self.sprite.set_rotation(adjustment.get_value())
         
     def cambio_escala(self, adjustment):
-        self.sprite.scale = adjustment.get_value()
+        self.sprite.set_scale(adjustment.get_value())
 
     def cambio_posicion_x(self, adjustment):
-        self.sprite.x = adjustment.get_value()
+        self.sprite.set_pos(adjustment.get_value(), -1)
     
     def cambio_posicion_y(self, adjustment):
-        self.sprite.y = adjustment.get_value()
+        self.sprite.set_pos(-1, adjustment.get_value())
     
 
     def crear_ventana(self):
@@ -164,19 +164,11 @@ class MainWindow:
         self.window.show_all()
         
         # --- CLUCOSA ---
-        self.area.connect('update', self.on_update)
-        self.area.connect('draw', self.on_draw)
             
         image = glucosa.Image('../data/glucosa_logo.png')
         self.sprite = glucosa.Sprite(image, 200, 75, 18, 18)
-        self.sprite.anchor_x = 30
-        self.sprite.anchor_y = 38
-        
-    def on_update(self, area):
-        self.sprite.update()
-    
-    def on_draw(self, area, context):
-        self.sprite.draw(context)
+        self.sprite.set_anchor(30, 38)
+        self.area.add_sprite(self.sprite)
 
     def main(self):
         gtk.main()

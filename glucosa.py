@@ -251,10 +251,10 @@ class Sprite(gobject.GObject):
 
     def set_pos(self, x = -1, y = -1):
         """Define la posicion del personaje"""
-        if x >= 0:
+        if x != -1:
             self.x = x
         
-        if y >= 0:
+        if y != -1:
             self.y = y
         self.emit('update')
         
@@ -287,7 +287,13 @@ class Sprite(gobject.GObject):
         self.emit('update')
 
     def set_image(self, image):
+        """Define la imagen del sprite"""
         self.image = image
+        self.emit('update')
+        
+    def set_scale(self, scale):
+        """Escalar el sprite"""
+        self.scale = scale
         self.emit('update')
 
     def draw(self, context):

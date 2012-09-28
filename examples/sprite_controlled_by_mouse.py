@@ -20,23 +20,16 @@ class Game:
 
     def __init__(self):
         (self.window, self.canvas) = glucosa.create_window()
-        self.canvas.connect('update', self.on_update)
-        self.canvas.connect('draw', self.on_draw)
 
         image = glucosa.Image('../data/aceituna.png')
         self.sprite = glucosa.Sprite(image, 0, 0, 18, 18, scale=2)
+        self.canvas.add_sprite(self.sprite)
         self.events = glucosa.Events(self.canvas)
         self.events.on_mouse_move += self.move_sprite
 
     def move_sprite(self, event):
-        self.sprite.x = event['x']
-        self.sprite.y = event['y']
+        self.sprite.set_pos(event['x'], event['y'])
 
-    def on_update(self, area):
-        self.sprite.update()
-
-    def on_draw(self, area, context):
-        self.sprite.draw(context)
 
 if __name__ == '__main__':
     juego = Game()
