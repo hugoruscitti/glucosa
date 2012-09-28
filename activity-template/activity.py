@@ -74,9 +74,9 @@ class ActivityTemplate(activity.Activity):
         # Code changes made by glucosa team, the three lines
         # makes the game graphic area.
         self.game = Game()
-        self.set_canvas(self.game)
+        self.set_canvas(self.game.canvas)
 
-        canvas.show()
+        self.game.canvas.show()
 
 class Game:
     """Es el administrador del juego.
@@ -86,7 +86,7 @@ class Game:
     llamado tantas veces como sea posible."""
 
     def __init__(self):
-        (self.window, self.canvas) = glucosa.create_window()
+        self.canvas = glucosa.GameArea()
         self.canvas.connect('update', self.on_update)
         self.canvas.set_update_loop(60)
         

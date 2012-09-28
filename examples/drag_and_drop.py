@@ -3,12 +3,9 @@
 import sys
 sys.path.append("..")
 
-import pygtk
 import gtk
-import cairo
-import gobject
+import math
 import glucosa
-
 
 
 class Game:
@@ -20,27 +17,25 @@ class Game:
 
     def __init__(self):
         (self.window, self.canvas) = glucosa.create_window()
-        self.canvas.connect('update', self.on_update)
-        self.canvas.set_update_loop(60)
         
         image = glucosa.Image('../data/aceituna.png')
         self.sprite = glucosa.Sprite(image, 100, 100, 18, 18, scale=2)
         self.canvas.add_sprite(self.sprite)
         self.events = glucosa.Events(self.canvas)
-        self.events.on_mouse_scroll_up += self.rueda_del_raton_arriba
-        self.events.on_mouse_scroll_down += self.rueda_del_raton_abajo
+        self.events.on_mouse_button_pressed += self.mouse_button_press
+        self.events.on_mouse_button_released += self.mouse_button_release
+        self.events.on_mouse_move += self.move_sprite
+        self._pressed = False
 
-    def rueda_del_raton_arriba(self, evento):
-        self.sprite.set_scale(self.sprite.scale + 0.1)
+    def mouse_button_press(self, evento):
+        self._pressed = True
 
-    def rueda_del_raton_abajo(self, evento):
-        self.sprite.set_scale(self.sprite.scale - 0.1)
-        if (self.sprite.scale < 1):
-            self.sprite.set_scale(1)
+    def mouse_button_release(self, evento):
+        self._pressed = False
 
-    def on_update(self, area):
-        self.sprite.rotation += 1
-
+    def move_sprite(self, event):
+        if self._pressed:
+            self.sprite.set_pos(event['x'], event['y'])
 
 if __name__ == '__main__':
     juego = Game()
