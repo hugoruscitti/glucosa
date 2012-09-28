@@ -265,6 +265,7 @@ class Sprite(gobject.GObject):
         >>> sprite.move(0, +10) # Aumentara 10 pixels en y"""
         self.x += mx
         self.y += mx
+        self.emit('update')
                 
     def set_anchor(self, x = -1, y = -1):
         """Define el punto de control del personaje"""
