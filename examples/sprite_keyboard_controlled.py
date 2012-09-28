@@ -58,18 +58,18 @@ class Player(glucosa.Sprite):
 
         # conecta los eventos
         self.events = events
-        self.events.on_key_pressed += self.on_key_down
-        self.events.on_key_released += self.on_key_up
+        self.events.connect('key-pressed', self.on_key_down)
+        self.events.connect('key-released', self.on_key_up)
         self.left_pressed = False
         self.right_pressed = False
 
     def set_state(self, state):
         self.state = state
 
-    def on_key_down(self):
+    def on_key_down(self, widget):
         self.update_control_state()
 
-    def on_key_up(self):
+    def on_key_up(self, widget):
         self.update_control_state()
 
     def update_control_state(self):

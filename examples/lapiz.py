@@ -22,13 +22,13 @@ class Game:
 
         image = glucosa.Image('../data/aceituna.png')
         self.events = glucosa.Events(self.canvas)
-        self.events.on_mouse_move += self.when_move_mouse
+        self.events.connect('mouse-moved', self.when_move_mouse)
         self.lapiz = glucosa.Pencil()
 
         self.mouse_x = 0
         self.mouse_y = 0
 
-    def when_move_mouse(self, event):
+    def when_move_mouse(self, widget, event):
         self.mouse_x = event['x']
         self.mouse_y = event['y']
 

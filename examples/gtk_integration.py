@@ -21,10 +21,10 @@ class MainWindow:
         self.sprite.set_scale(adjustment.get_value())
 
     def cambio_posicion_x(self, adjustment):
-        self.sprite.set_pos(adjustment.get_value(), -1)
+        self.sprite.x = adjustment.get_value()
     
     def cambio_posicion_y(self, adjustment):
-        self.sprite.set_pos(-1, adjustment.get_value())
+        self.sprite.y = adjustment.get_value()
     
 
     def crear_ventana(self):

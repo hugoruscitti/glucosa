@@ -26,7 +26,7 @@ class Game:
         image = glucosa.Image('../data/aceituna.png')
         self.sprite = glucosa.Sprite(image, 0, 0, 18, 18)
         self.events = glucosa.Events(self.canvas)
-        self.events.on_mouse_move += self.move_sprite
+        self.events.connect('mouse-moved', self.move_sprite)
 
         self.sprite2 = glucosa.Sprite(image, 60, 40, 18, 18)
         self.texto_colision = glucosa.Text('', 10, 100, face='Arial', size=18,
@@ -35,7 +35,7 @@ class Game:
         self.canvas.add_sprite(self.sprite)
         self.canvas.add_sprite(self.sprite2)
 
-    def move_sprite(self, event):
+    def move_sprite(self, widget, event):
         self.sprite.set_pos(event['x'], event['y'])
 
     def on_update(self, area):

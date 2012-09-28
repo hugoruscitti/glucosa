@@ -25,9 +25,9 @@ class Game:
         self.sprite = glucosa.Sprite(image, 0, 0, 18, 18, scale=2)
         self.canvas.add_sprite(self.sprite)
         self.events = glucosa.Events(self.canvas)
-        self.events.on_mouse_move += self.move_sprite
+        self.events.connect('mouse-moved', self.move_sprite)
 
-    def move_sprite(self, event):
+    def move_sprite(self, widget, event):
         self.sprite.set_pos(event['x'], event['y'])
 
 

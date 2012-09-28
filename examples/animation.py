@@ -29,28 +29,16 @@ class Game:
 
         self.events = glucosa.Events(self.canvas)
 
-        self.events.on_mouse_move += self.raton_movido
-        self.events.on_mouse_button_pressed += self.boton_mouse_presionado
-        self.events.on_key_pressed += self.tecla_pulsada
-        self.events.on_mouse_scroll_up += self.rueda_del_raton_arriba
-        self.events.on_mouse_scroll_down += self.rueda_del_raton_abajo
+        self.events.connect('key-pressed', self.tecla_pulsada)
+	self.events.connect('mouse-button-pressed', self.boton_mouse_presionado)
 
         self.sound = glucosa.Sound("data/jump.wav")
         self.sound.play()
 
-    def raton_movido(self, evento):
-        pass
-
-    def rueda_del_raton_arriba(self, evento):
-        print "arriba"
-
-    def rueda_del_raton_abajo(self, evento):
-        print "abajo"
-
-    def boton_mouse_presionado(self, evento):
+    def boton_mouse_presionado(self, widget, evento):
         self.crear_actor(evento['x'], evento['y'])
 
-    def tecla_pulsada(self):
+    def tecla_pulsada(self, widget):
         if (self.events.is_pressed(glucosa.Events.K_RIGHT)):
             self.actor_animado.x += 1
         if (self.events.is_pressed(glucosa.Events.K_LEFT)):

@@ -398,85 +398,42 @@ class Singleton(type):
         return self.instance
 
 
-class _EventsManager:
-
-    # Listado de eventos a capturar.
-    __events__ = ('on_mouse_move',
-                  'on_mouse_button_pressed',
-                  'on_mouse_button_released',
-                  'on_mouse_scroll_up',
-                  'on_mouse_scroll_down',
-                  'on_key_pressed',
-                  'on_key_released')
-
-    def __getattr__(self, name):
-        if hasattr(self.__class__, '__events__'):
-            assert name in self.__class__.__events__, \
-            "Event '%s' is not declared" % name
-        self.__dict__[name] = ev = _EventSlot(name)
-        return ev
-
-    def __repr__(self): return 'Events' + str(list(self))
-
-    __str__ = __repr__
-
-    def __len__(self): return NotImplemented
-
-    def __iter__(self):
-        def gen(dictitems = self.__dict__.items()):
-            for attr, val in dictitems:
-                if isinstance(val, _EventSlot):
-                    yield val
-        return gen()
-
-class _EventSlot:
-    """ Evento generico al que se agregan observadores para ser informados
-    de cuando se ha producido dicho evento. """
-
-    def __init__(self, name):
-        self.targets = []
-        self.__name__ = name
-
-    def __repr__(self):
-        return 'event ' + self.__name__
-
-    def __call__(self, *a, **kw):
-        for f in self.targets: f(*a, **kw)
-
-    def __iadd__(self, f):
-        self.targets.append(f)
-        return self
-
-    def __isub__(self, f):
-        while f in self.targets: self.targets.remove(f)
-        return self
-
-class Events(_EventsManager, object):
+class Events(gobject.GObject):
     """ Gestor de los posibles eventos que se producen en glucosa.
 
     >>> def boton_mouse_presionado(self, evento):
     >>>     print evento
     >>>
-    >>> eventos = glucosa.Events(self.window)
-    >>> eventos.on_mouse_button_pressed += self.boton_mouse_presionado
+    >>> eventos = glucosa.AreaEvents(self.window)
+    >>> eventos.connect('mouse-button-pressed', self.boton_mouse_presionado)
 
 
     Los posibles eventos a los que se puede conectar un metodo son:
 
-    - on_mouse_move ( al mover el raton por la pantalla ).
-    - on_mouse_button_pressed ( al soltar un botón del ratón ).
-    - on_mouse_button_released ( al presionar un btoón del ratón ).
-    - on_mouse_scroll_up ( al mover la rueda central del raton hacia arriba ).
-    - on_mouse_scroll_down ( al mover la rueda central del raton hacia abajo ).
-    - on_key_pressed ( al pulsar una tecla ).
-    - on_key_released ( al soltar una tecla ).
+    - mouse-moved ( al mover el raton por la pantalla ).
+    - mouse-button-pressed ( al soltar un botón del ratón ).
+    - mouse-button-released ( al presionar un btoón del ratón ).
+    - mouse-scroll-up ( al mover la rueda central del raton hacia arriba ).
+    - mouse-scroll-down ( al mover la rueda central del raton hacia abajo ).
+    - key-pressed ( al pulsar una tecla ).
+    - key-released ( al soltar una tecla ).
 
     """
 
+	# No funciona con gobject:
     # Solo puede existir una instancia de este objeto en el programa.
-    __metaclass__ = Singleton
+    #__metaclass__ = Singleton
+
+    __gsignals__ = {'mouse-moved': (gobject.SIGNAL_RUN_FIRST, None, [object]),
+					'mouse-button-pressed': (gobject.SIGNAL_RUN_FIRST, None, [object]),
+					'mouse-button-released': (gobject.SIGNAL_RUN_FIRST, None, [object]),
+					'mouse-scroll-up': (gobject.SIGNAL_RUN_FIRST, None, [object]),
+					'mouse-scroll-down': (gobject.SIGNAL_RUN_FIRST, None, [object]),
+					'key-pressed': (gobject.SIGNAL_RUN_FIRST, None, []),
+					'key-released': (gobject.SIGNAL_RUN_FIRST, None, [])}
 
     def __init__(self, widget):
+        gobject.GObject.__init__(self)
 
         self._widget = widget
 
@@ -499,21 +456,21 @@ class Events(_EventsManager, object):
     def _mouse_move(self, widget, event):
         mouse_event = {'x' : event.x,
                       'y' : event.y}
-        self.on_mouse_move(mouse_event)
+        self.emit('mouse-moved', mouse_event)
         return True
 
     def _mouse_button_press(self, widget, event):
         mouse_event = {'button' : event.button,
                       'x' : event.x,
                       'y' : event.y}
-        self.on_mouse_button_pressed(mouse_event)
+        self.emit('mouse-button-pressed', mouse_event)
         return True
 
     def _mouse_button_released(self, widget, event):
         mouse_event = {'button' : event.button,
                       'x' : event.x,
                       'y' : event.y}
-        self.on_mouse_button_released(mouse_event)
+        self.emit('mouse-button-released', mouse_event)
         return True
 
     def _mouse_scroll(self, widget, event):
@@ -521,10 +478,10 @@ class Events(_EventsManager, object):
                       'y' : event.y}
 
         if (event.direction == self.scroll_up):
-            self.on_mouse_scroll_up(mouse_event)
+           self.emit('mouse-scroll-up', mouse_event)
 
         if (event.direction == self.scroll_down):
-            self.on_mouse_scroll_down(mouse_event)
+           self.emit('mouse-sccroll-down', mouse_event)
 
         return True
 
@@ -537,7 +494,7 @@ class Events(_EventsManager, object):
         return (key in self._keys_pressed)
 
     def _key_repeater(self):
-        self.on_key_pressed()
+        self.emit('key-pressed')
         return len(self._keys_pressed) > 0
 
     def _key_pressed(self, widget, event):
@@ -550,14 +507,14 @@ class Events(_EventsManager, object):
             gobject.timeout_add(10, self._key_repeater)
 
         self._register_key(keyvalue)
-        self.on_key_pressed()
+        self.emit('key-pressed')
 
         return True
 
     def _key_released(self, widget, event):
         keyvalue = gtk.gdk.keyval_name(event.keyval)
         self._unregister_key(keyvalue)
-        self.on_key_released()
+        self.emit('key-released')
         return True
 
     def _register_key(self, key):
