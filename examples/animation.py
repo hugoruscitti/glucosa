@@ -18,12 +18,12 @@ class Game:
 
     def __init__(self):
         (self.window, self.canvas) = glucosa.create_window()
-        self.canvas.connect('update', self.on_update)
-        self.canvas.connect('draw', self.on_draw)
 
+        self.canvas.set_update_loop(60)
         self.actores = []
 
         self.actor_animado = glucosa.Sprite(glucosa.Frame('../data/moneda.png', 8), 0, 0)
+        self.canvas.add_sprite(self.actor_animado)
         self.actor_animado.x = 100
         self.actor_animado.y = 60
 
@@ -63,14 +63,6 @@ class Game:
     def crear_actor(self, x , y):
         self.actores.append(glucosa.Sprite(glucosa.Image('../data/aceituna.png'), x, y))
 
-    def on_update(self, area):
-        self.actor_animado.update()
-
-    def on_draw(self, area, context):
-        for actor in self.actores:
-            actor.draw(context)
-
-        self.actor_animado.draw(context)
 
 if __name__ == '__main__':
     juego = Game()

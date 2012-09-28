@@ -714,6 +714,7 @@ class GameArea(gtk.DrawingArea):
         gtk.DrawingArea.__init__(self)
                 
         self.sprites = []
+        self._timeout = None
         
         self.connect("expose-event", self._on_draw)
         
@@ -729,6 +730,14 @@ class GameArea(gtk.DrawingArea):
         """Agrega un sprite a el area de juego"""
         self.sprites.append(sprite)
         sprite.connect('update', self._update)
+
+    def set_update_loop(self, fps=60):
+        """Define un bucle de actualizacion si fps = -1 el bucle se detendra
+           y dibujara solo cuando un sprite cambie"""
+        if self._timeout:
+            gobject.source_remove(self._timeout)
+        if fps != -1:
+            self._timeout = gobject.timeout_add(1000/60, self._update)
 
     def _update(self, *args):
         # Emite la señal, llamando a todas las funciones que esten conectadas
