@@ -100,6 +100,36 @@ def _range_between_two_points((x1, y1), (x2, y2)):
     "Retorna la distancia entre dos puntos en dos dimensiones."
     return math.sqrt(_range(x1, x2) ** 2 + _range(y1, y2) ** 2)
 
+def dec2hex(dec):
+    """Devulve la representación de una cadena en hexadecimal de un entero"""
+    return "%X" % dec
+
+def hex2dec(hex):
+    """Devuelve el valor entero de una cadena en hexadecimal"""
+    return int(hex, 16)
+
+def get_pixel_color(x, y, surface):
+    """Devuelve el color del pixel solicitado de una surface de cairo."""
+    if isinstance(surface, cairo.Surface):
+        if surface.get_format() == cairo.FORMAT_ARGB32:
+            if surface.get_width() > x >= 0 and surface.get_height() > y >= 0:
+
+                data = surface.get_data()
+
+                bit = surface.get_width() * y * 8 + x * 8
+
+                B = hex2dec(str(data).encode('hex')[bit:bit + 8][0:2])
+                G = hex2dec(str(data).encode('hex')[bit:bit + 8][2:4])
+                R = hex2dec(str(data).encode('hex')[bit:bit + 8][4:6])
+                A = hex2dec(str(data).encode('hex')[bit:bit + 8][6:8])
+
+                return (R, G, B, A)
+            else:
+                raise Exception("Pixel out of range.")
+        else:
+            raise Exception("Only RGBA surfaces are accepted.")
+    else:
+        raise Exception("The surface must be a cairo.Surface.")
 
 def create_window():
     """Genera una ventana con un elemento DrawingArea dentro.
@@ -120,8 +150,6 @@ def create_window():
 
     return (window, canvas)
 
-# Sume object oriented stuff
-
 class Image:
     """Una imagen simple, que puede ser dibujada por un sprite.
 
@@ -140,6 +168,7 @@ class Image:
                               scale=scale, rotation=rotation,
                               anchor_x=anchor_x, anchor_y=anchor_y,
                               flip=flip)
+
 
 class Frame(Image):
     """Representa un cuadro de animación, realizado dividiendo una imagen.
@@ -317,7 +346,7 @@ class Sprite(gobject.GObject):
     def collision_with(self, sprite):
         "Retorna True si el sprite colisiona con otro sprite."
         return _range_between_two_points(self.get_center(), sprite.get_center()) < self.radius + sprite.radius
-    
+
     def set_x(self, x):
         self._x = x
         self.emit('update')
