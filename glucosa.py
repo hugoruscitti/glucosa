@@ -317,7 +317,7 @@ class Sprite(gobject.GObject):
     def collision_with(self, sprite):
         "Retorna True si el sprite colisiona con otro sprite."
         return _range_between_two_points(self.get_center(), sprite.get_center()) < self.radius + sprite.radius
-
+    
     def set_x(self, x):
         self._x = x
         self.emit('update')
@@ -334,8 +334,38 @@ class Sprite(gobject.GObject):
 
     x = property(get_x, set_x, doc="Define la posicion horizonal")
     y = property(get_y, set_y, doc="Define la posicion vertical")
+    
+    def get_left(self):
+        return self.x - (self.image.width * self.scale / 2)
 
+    def set_left(self, x):
+        self.x = x + (self.image.width * self.scale / 2)
 
+    def get_right(self):
+        return self.left + (self.image.width * self.scale)
+
+    def set_right(self, x):
+        self.set_left(x - self.image.width * self.scale)
+
+    left = property(get_left, set_left, doc="Define la posición izquierda del Sprite")
+    right = property(get_right, set_right, doc="Define la posición derecha del Sprite")
+
+    def get_top(self):
+        return self.y - (self.image.height * self.scale / 2)
+
+    def set_top(self, y):
+        self.y = y + (self.image.height * self.scale / 2)
+
+    def get_bottom(self):
+        return self.top + (self.image.height * self.scale)
+
+    def set_bottom(self, y):
+        self.set_top(y - self.image.height * self.scale)
+
+    top = property(get_top, set_top, doc="Define la posición superior del Sprite")
+    bottom = property(get_bottom, set_bottom, doc="Define la posición inferior del Sprite")
+    
+    
 class Text:
     """Muestra un texto en la pantalla.
 
