@@ -540,7 +540,7 @@ class Events(gobject.GObject):
            self.emit('mouse-scroll-up', mouse_event)
 
         if (event.direction == self.scroll_down):
-           self.emit('mouse-sccroll-down', mouse_event)
+           self.emit('mouse-scroll-down', mouse_event)
 
         return True
 

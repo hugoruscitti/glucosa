@@ -39,7 +39,7 @@ class Game:
             self.sprite.set_scale(1)
 
     def on_update(self, area):
-        self.sprite.rotation += 1
+        self.sprite.rotation += 50
 
 
 if __name__ == '__main__':
