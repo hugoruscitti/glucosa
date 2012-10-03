@@ -759,6 +759,8 @@ class GameArea(gtk.DrawingArea):
         self.sprites = []
         self._timeout = None
 
+        self.backgroud = None
+        
         self.connect("expose-event", self._on_draw)
 
         self.set_events(  gtk.gdk.BUTTON_PRESS_MASK
@@ -798,6 +800,11 @@ class GameArea(gtk.DrawingArea):
         context = self.window.cairo_create()
         window_size = self.get_window().get_size()
         fill(context, (50,50,50), window_size)
+
+        # Dibuja el fondo
+        if not self.backgroud == None:
+            self.backgroud.blit(context, 0, 0, scale=1, rotation=0, anchor_x=0,
+                                anchor_y=0, flip=False)
 
         # Se encarga de dibujar los sprites
         for sprite in self.sprites:
