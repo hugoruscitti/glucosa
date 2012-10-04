@@ -759,7 +759,7 @@ class GameArea(gtk.DrawingArea):
         self.sprites = []
         self._timeout = None
 
-        self.backgroud = None
+        self._backgroud = None
         
         self.connect("expose-event", self._on_draw)
 
@@ -775,6 +775,11 @@ class GameArea(gtk.DrawingArea):
         """Agrega un sprite a el area de juego"""
         self.sprites.append(sprite)
         sprite.connect('update', self._update)
+        
+    def set_background(self, background):
+        """Define el fondo del area de juego"""
+        self.background = background
+        self.queue_draw()
 
     def set_update_loop(self, fps=60):
         """Define un bucle de actualizacion si fps = -1 el bucle se detendra
@@ -802,7 +807,7 @@ class GameArea(gtk.DrawingArea):
         fill(context, (50,50,50), window_size)
 
         # Dibuja el fondo
-        if not self.backgroud == None:
+        if self.backgroud:
             self.backgroud.blit(context, 0, 0, scale=1, rotation=0, anchor_x=0,
                                 anchor_y=0, flip=False)
 
