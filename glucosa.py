@@ -778,7 +778,7 @@ class GameArea(gtk.DrawingArea):
         
     def set_background(self, background):
         """Define el fondo del area de juego"""
-        self.background = background
+        self._background = background
         self.queue_draw()
 
     def set_update_loop(self, fps=60):
@@ -807,8 +807,8 @@ class GameArea(gtk.DrawingArea):
         fill(context, (50,50,50), window_size)
 
         # Dibuja el fondo
-        if self.backgroud:
-            self.backgroud.blit(context, 0, 0, scale=1, rotation=0, anchor_x=0,
+        if self._backgroud:
+            self._backgroud.blit(context, 0, 0, scale=1, rotation=0, anchor_x=0,
                                 anchor_y=0, flip=False)
 
         # Se encarga de dibujar los sprites
