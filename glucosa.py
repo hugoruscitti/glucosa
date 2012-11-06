@@ -497,17 +497,17 @@ class Events(gobject.GObject):
         self._widget = widget
 
         # Conectamos los eventos de GTK.
-        self._widget.area.connect('motion-notify-event',
+        self._widget.connect('motion-notify-event',
                              self._mouse_move)
-        self._widget.area.connect('button-press-event',
+        self._widget.connect('button-press-event',
                              self._mouse_button_press)
-        self._widget.area.connect('button-release-event',
+        self._widget.connect('button-release-event',
                              self._mouse_button_released)
-        self._widget.area.connect('key-press-event',
+        self._widget.connect('key-press-event',
                              self._key_pressed)
-        self._widget.area.connect('key-release-event',
+        self._widget.connect('key-release-event',
                              self._key_released)
-        self._widget.area.connect('scroll-event',
+        self._widget.connect('scroll-event',
                              self._mouse_scroll)
 
         self._keys_pressed = []
@@ -736,7 +736,7 @@ class Pencil:
 
         context.stroke()
 
-class GameArea(gtk.Fixed):
+class GameArea(gtk.DrawingArea):
     """Es el area donde el juego se dibujará
 
     Permite ser embebida en cualquier contenedor de gtk, ya que es un
@@ -754,38 +754,32 @@ class GameArea(gtk.Fixed):
                                }
 
     def __init__(self):
-        gtk.Fixed.__init__(self)
+        gtk.DrawingArea.__init__(self)
 
         self.sprites = []
         self._timeout = None
 
-        self._background = gtk.Image()
-        self.add(self._background)
+        self._backgroud = None
         
-        self.area = gtk.DrawingArea()
-        self.add(self.area)
+        self.connect("expose-event", self._on_draw)
 
-        self.area.connect("expose-event", self._on_draw)
+        self.set_events(  gtk.gdk.BUTTON_PRESS_MASK
+                          | gtk.gdk.BUTTON_RELEASE_MASK
+                          | gtk.gdk.KEY_RELEASE_MASK
+                          | gtk.gdk.KEY_PRESS_MASK
+                          | gtk.gdk.POINTER_MOTION_MASK)
 
-        self.area.set_events(gtk.gdk.BUTTON_PRESS_MASK
-                           | gtk.gdk.BUTTON_RELEASE_MASK
-                           | gtk.gdk.KEY_RELEASE_MASK
-                           | gtk.gdk.KEY_PRESS_MASK
-                           | gtk.gdk.POINTER_MOTION_MASK)
-
-        self.area.set_flags(gtk.CAN_FOCUS)
-
-        self.show_all()
+        self.set_flags (gtk.CAN_FOCUS)
 
     def add_sprite(self, sprite):
         """Agrega un sprite a el area de juego"""
         self.sprites.append(sprite)
         sprite.connect('update', self._update)
         
-    def set_background(self, path, width, height):
+    def set_background(self, background):
         """Define el fondo del area de juego"""
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(path, width, height)
-        self._background.set_from_pixbuf(pixbuf)
+        self._background = background
+        self.queue_draw()
 
     def set_update_loop(self, fps=60):
         """Define un bucle de actualizacion si fps = -1 el bucle se detendra
@@ -804,13 +798,18 @@ class GameArea(gtk.Fixed):
         for sprite in self.sprites:
             sprite.update()
 
-        gobject.idle_add(self.area.queue_draw)
+        gobject.idle_add(self.queue_draw)
         return True
 
     def _on_draw(self, widget, event):
         context = self.window.cairo_create()
         window_size = self.get_window().get_size()
         fill(context, (50,50,50), window_size)
+
+        # Dibuja el fondo
+        if self._backgroud:
+            self._backgroud.blit(context, 0, 0, scale=1, rotation=0, anchor_x=0,
+                                anchor_y=0, flip=False)
 
         # Se encarga de dibujar los sprites
         for sprite in self.sprites:
