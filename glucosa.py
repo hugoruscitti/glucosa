@@ -759,7 +759,7 @@ class GameArea(gtk.DrawingArea):
         self.sprites = []
         self._timeout = None
 
-        self._backgroud = None
+        self._background = None
         
         self.connect("expose-event", self._on_draw)
 
@@ -807,8 +807,8 @@ class GameArea(gtk.DrawingArea):
         fill(context, (50,50,50), window_size)
 
         # Dibuja el fondo
-        if self._backgroud:
-            self._backgroud.blit(context, 0, 0, scale=1, rotation=0, anchor_x=0,
+        if self._background:
+            self._background.blit(context, 0, 0, scale=1, rotation=0, anchor_x=0,
                                 anchor_y=0, flip=False)
 
         # Se encarga de dibujar los sprites
