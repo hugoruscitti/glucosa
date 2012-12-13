@@ -301,17 +301,23 @@ class Sprite(gobject.GObject):
 
         if y >= 0:
             self.anchor_y = y
-        self.emit('update')
+        #self.emit('update')
 
     def set_rotation(self, rotation):
         """Rota el personaje, en grados"""
-        self.rotation = rotation
-        self.emit('update')
+        self._rotation = rotation
+        #self.emit('update')
+
+    def get_rotation(self, rotation):
+        """Retorna la rotacion del sprite. """
+        return self._rotation
+
+    rotation = property(get_rotation, set_rotation, doc="Define la rotación del Sprite.")
 
     def set_flip(self, flip):
         """Espejado horizontal"""
         self._flip = flip
-        self.emit('update')
+        #self.emit('update')
 
     def get_flip(self):
         return self._flip
@@ -321,12 +327,12 @@ class Sprite(gobject.GObject):
     def set_image(self, image):
         """Define la imagen del sprite"""
         self.image = image
-        self.emit('update')
+        #self.emit('update')
 
     def set_scale(self, scale):
         """Escalar el sprite"""
         self.scale = scale
-        self.emit('update')
+        #self.emit('update')
 
     def draw(self, context):
         """ Dibuja un el sprite en el contexto """
@@ -349,11 +355,11 @@ class Sprite(gobject.GObject):
 
     def set_x(self, x):
         self._x = x
-        self.emit('update')
+        #self.emit('update')
 
     def set_y(self, y):
         self._y = y
-        self.emit('update')
+        #self.emit('update')
 
     def get_x(self):
         return self._x
@@ -363,7 +369,7 @@ class Sprite(gobject.GObject):
 
     x = property(get_x, set_x, doc="Define la posicion horizonal")
     y = property(get_y, set_y, doc="Define la posicion vertical")
-    
+
     def get_left(self):
         return self.x - (self.image.width * self.scale / 2)
 
@@ -393,8 +399,8 @@ class Sprite(gobject.GObject):
 
     top = property(get_top, set_top, doc="Define la posición superior del Sprite")
     bottom = property(get_bottom, set_bottom, doc="Define la posición inferior del Sprite")
-    
-    
+
+
 class Text:
     """Muestra un texto en la pantalla.
 
@@ -760,7 +766,7 @@ class GameArea(gtk.DrawingArea):
         self._timeout = None
 
         self._background = None
-        
+
         self.connect("expose-event", self._on_draw)
 
         self.set_events(  gtk.gdk.BUTTON_PRESS_MASK
@@ -775,7 +781,7 @@ class GameArea(gtk.DrawingArea):
         """Agrega un sprite a el area de juego"""
         self.sprites.append(sprite)
         sprite.connect('update', self._update)
-        
+
     def set_background(self, background):
         """Define el fondo del area de juego"""
         self._background = background
