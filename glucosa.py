@@ -796,10 +796,7 @@ class GameArea(gtk.DrawingArea):
             self._timeout = gobject.timeout_add(1000/60, self._update)
 
     def _redraw(self, *args):
-        # Se actualizan los sprites
-        for sprite in self.sprites:
-            sprite.update()
-
+        # Se redibujan los sprites
         gobject.idle_add(self.queue_draw)
 
         return True
@@ -808,6 +805,11 @@ class GameArea(gtk.DrawingArea):
         # Emite la señal, llamando a todas las funciones que esten conectadas
         # en este caso no pasa argumentos.
         self.emit('update')
+
+        for sprite in self.sprites:
+            sprite.update()
+
+        gobject.idle_add(self.queue_draw)
 
         return True
 
