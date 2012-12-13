@@ -301,14 +301,14 @@ class Sprite(gobject.GObject):
 
         if y >= 0:
             self.anchor_y = y
-        #self.emit('update')
+        self.emit('update')
 
     def set_rotation(self, rotation):
         """Rota el personaje, en grados"""
         self._rotation = rotation
-        #self.emit('update')
+        self.emit('update')
 
-    def get_rotation(self, rotation):
+    def get_rotation(self):
         """Retorna la rotacion del sprite. """
         return self._rotation
 
@@ -317,7 +317,7 @@ class Sprite(gobject.GObject):
     def set_flip(self, flip):
         """Espejado horizontal"""
         self._flip = flip
-        #self.emit('update')
+        self.emit('update')
 
     def get_flip(self):
         return self._flip
@@ -327,12 +327,12 @@ class Sprite(gobject.GObject):
     def set_image(self, image):
         """Define la imagen del sprite"""
         self.image = image
-        #self.emit('update')
+        self.emit('update')
 
     def set_scale(self, scale):
         """Escalar el sprite"""
         self.scale = scale
-        #self.emit('update')
+        self.emit('update')
 
     def draw(self, context):
         """ Dibuja un el sprite en el contexto """
@@ -355,11 +355,11 @@ class Sprite(gobject.GObject):
 
     def set_x(self, x):
         self._x = x
-        #self.emit('update')
+        self.emit('update')
 
     def set_y(self, y):
         self._y = y
-        #self.emit('update')
+        self.emit('update')
 
     def get_x(self):
         return self._x
@@ -780,7 +780,7 @@ class GameArea(gtk.DrawingArea):
     def add_sprite(self, sprite):
         """Agrega un sprite a el area de juego"""
         self.sprites.append(sprite)
-        sprite.connect('update', self._update)
+        sprite.connect('update', self._redraw)
 
     def set_background(self, background):
         """Define el fondo del area de juego"""
@@ -795,16 +795,20 @@ class GameArea(gtk.DrawingArea):
         if fps != -1:
             self._timeout = gobject.timeout_add(1000/60, self._update)
 
-    def _update(self, *args):
-        # Emite la señal, llamando a todas las funciones que esten conectadas
-        # en este caso no pasa argumentos.
-        self.emit('update')
-
+    def _redraw(self, *args):
         # Se actualizan los sprites
         for sprite in self.sprites:
             sprite.update()
 
         gobject.idle_add(self.queue_draw)
+
+        return True
+
+    def _update(self, *args):
+        # Emite la señal, llamando a todas las funciones que esten conectadas
+        # en este caso no pasa argumentos.
+        self.emit('update')
+
         return True
 
     def _on_draw(self, widget, event):
