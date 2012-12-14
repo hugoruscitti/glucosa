@@ -263,12 +263,16 @@ class Sprite(gobject.GObject):
     - flip -- espejado horizontal.
     """
 
+    COLLISION_RECTANGLE = 0
+    COLLISION_CIRCLE = 1
+
     __gsignals__ = {
              'update': (gobject.SIGNAL_RUN_FIRST, None, [])}
 
-    def __init__(self, image, x, y, anchor_x=0, anchor_y=0, scale=1, rotation=0, flip=False):
+    def __init__(self, image, x, y, anchor_x=0, anchor_y=0, scale=1, rotation=0, flip=False, type_collision=COLLISION_RECTANGLE):
         gobject.GObject.__init__(self)
         self.image = image
+        self.rectangle = gtk.gdk.Rectangle(0, 0, self.image.width, self.image.height)
         self.x = x
         self.y = y
         self.anchor_x = anchor_x
@@ -277,6 +281,7 @@ class Sprite(gobject.GObject):
         self.rotation = rotation
         self.flip = flip
         self.radius = (max(self.image.width, self.image.height) / 2)
+        self.type_collision = type_collision
 
     def set_pos(self, x=None, y=None):
         """Define la posicion del personaje"""
@@ -351,14 +356,46 @@ class Sprite(gobject.GObject):
 
     def collision_with(self, sprite):
         "Retorna True si el sprite colisiona con otro sprite."
-        return _range_between_two_points(self.get_center(), sprite.get_center()) < self.radius + sprite.radius
+        if (self.type_collision == self.COLLISION_CIRCLE and sprite.type_collision == self.COLLISION_CIRCLE) :
+            return _range_between_two_points(self.get_center(), sprite.get_center()) < self.radius + sprite.radius
+
+        if (self.type_collision == self.COLLISION_RECTANGLE and sprite.type_collision == self.COLLISION_RECTANGLE) :
+            intersect = self.rectangle.intersect(sprite.rectangle)
+            if (intersect.width == 0 and intersect.height == 0):
+                return False
+            else:
+                return True
+
+        if (self.type_collision == self.COLLISION_CIRCLE and sprite.type_collision == self.COLLISION_RECTANGLE):
+            if (math.fabs(self.get_center()[0]-sprite.get_center()[0]) <= (sprite.rectangle.width/2 + self.radius)):
+                return True
+            else:
+                return False
+
+            if (math.fabs(self.get_center()[1]-sprite.get_center()[1]) <= (sprite.rectangle.height/2 + self.radius)):
+                return True
+            else:
+                return False
+
+        if (self.type_collision == self.COLLISION_RECTANGLE and sprite.type_collision == self.COLLISION_CIRCLE):
+            if (math.fabs(sprite.get_center()[0]-self.get_center()[0]) <= (self.rectangle.width/2 + sprite.radius)):
+                return True
+            else:
+                return False
+
+            if (math.fabs(sprite.get_center()[1]-self.get_center()[1]) <= (self.rectangle.height/2 + sprite.radius)):
+                return True
+            else:
+                return False
 
     def set_x(self, x):
         self._x = x
+        self.rectangle.x = x
         self.emit('update')
 
     def set_y(self, y):
         self._y = y
+        self.rectangle.y = y
         self.emit('update')
 
     def get_x(self):

@@ -22,16 +22,16 @@ class Game:
         (self.window, self.canvas) = glucosa.create_window()
         self.canvas.connect('update', self.on_update)
         self.canvas.connect('draw', self.on_draw)
-        
+
         image = glucosa.Image('../data/aceituna.png')
-        self.sprite = glucosa.Sprite(image, 0, 0, 18, 18)
+        self.sprite = glucosa.Sprite(image, 0, 0, 18, 18, type_collision=glucosa.Sprite.COLLISION_CIRCLE)
         self.events = glucosa.Events(self.canvas)
         self.events.connect('mouse-moved', self.move_sprite)
 
-        self.sprite2 = glucosa.Sprite(image, 60, 40, 18, 18)
+        self.sprite2 = glucosa.Sprite(image, 60, 40, 18, 18, type_collision=glucosa.Sprite.COLLISION_CIRCLE)
         self.texto_colision = glucosa.Text('', 10, 100, face='Arial', size=18,
                                            color = (255, 0, 0))
-                                           
+
         self.canvas.add_sprite(self.sprite)
         self.canvas.add_sprite(self.sprite2)
 
