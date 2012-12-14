@@ -777,6 +777,8 @@ class GameArea(gtk.DrawingArea):
 
         self.set_flags (gtk.CAN_FOCUS)
 
+        self.set_update_loop(fps=60)
+
     def add_sprite(self, sprite):
         """Agrega un sprite a el area de juego"""
         self.sprites.append(sprite)
