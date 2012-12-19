@@ -131,7 +131,7 @@ def get_pixel_color(x, y, surface):
     else:
         raise Exception("The surface must be a cairo.Surface.")
 
-def create_window():
+def create_window(fps=60):
     """Genera una ventana con un elemento DrawingArea dentro.
 
     Esta función se utiliza para simplificar pruebas rápidas y
@@ -143,7 +143,7 @@ def create_window():
     """
     window = gtk.Window()
     window.connect('destroy', gtk.main_quit)
-    canvas = GameArea()
+    canvas = GameArea(fps=fps)
 
     window.add(canvas)
     window.show_all()
@@ -796,7 +796,7 @@ class GameArea(gtk.DrawingArea):
              'draw': (gobject.SIGNAL_RUN_FIRST, None, [object]),
                                }
 
-    def __init__(self):
+    def __init__(self, fps=60):
         gtk.DrawingArea.__init__(self)
 
         self.sprites = []
@@ -814,7 +814,7 @@ class GameArea(gtk.DrawingArea):
 
         self.set_flags (gtk.CAN_FOCUS)
 
-        self.set_update_loop(fps=60)
+        self.set_update_loop(fps=fps)
 
     def add_sprite(self, sprite):
         """Agrega un sprite a el area de juego"""
@@ -832,7 +832,7 @@ class GameArea(gtk.DrawingArea):
         if self._timeout:
             gobject.source_remove(self._timeout)
         if fps != -1:
-            self._timeout = gobject.timeout_add(1000/60, self._update)
+            self._timeout = gobject.timeout_add(1000/fps, self._update)
 
     def _redraw(self, *args):
         # Se redibujan los sprites
