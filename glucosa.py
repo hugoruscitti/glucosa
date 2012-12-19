@@ -438,7 +438,7 @@ class Sprite(gobject.GObject):
     bottom = property(get_bottom, set_bottom, doc="Define la posición inferior del Sprite")
 
 
-class Text:
+class Text(gobject.GObject):
     """Muestra un texto en la pantalla.
 
         >>> texto = glucosa.Text('Hola Mundo\\nBienvenido a Glucosa!', 10, 100, face='Arial', size=18)
@@ -448,7 +448,11 @@ class Text:
 
     """
 
+    __gsignals__ = {
+             'update': (gobject.SIGNAL_RUN_FIRST, None, [])}
+
     def __init__(self, text, x, y, size = 12, color = (0, 0, 0), face = "Monospace"):
+        gobject.GObject.__init__(self)
         self.text = text
         self.x = x
         self.y = y
@@ -471,6 +475,9 @@ class Text:
                                                          self.size,
                                                          self.face)
             dy += text_height
+
+    def update(self):
+        pass
 
 class Singleton(type):
     """Clase para garantizar que una clase sólo tenga una instancia y
@@ -532,7 +539,7 @@ class Events(gobject.GObject):
 					'mouse-scroll-up': (gobject.SIGNAL_RUN_FIRST, None, [object]),
 					'mouse-scroll-down': (gobject.SIGNAL_RUN_FIRST, None, [object]),
 					'key-pressed': (gobject.SIGNAL_RUN_FIRST, None, []),
-					'key-released': (gobject.SIGNAL_RUN_FIRST, None, [])}
+					'key-released': (gobject.SIGNAL_RUN_FIRST, None, [object])}
 
     def __init__(self, widget):
         gobject.GObject.__init__(self)
@@ -599,6 +606,9 @@ class Events(gobject.GObject):
         self.emit('key-pressed')
         return len(self._keys_pressed) > 0
 
+    def get_keys_down(self):
+        return self._keys_pressed
+
     def _key_pressed(self, widget, event):
         keyvalue = gtk.gdk.keyval_name(event.keyval)
 
@@ -616,7 +626,7 @@ class Events(gobject.GObject):
     def _key_released(self, widget, event):
         keyvalue = gtk.gdk.keyval_name(event.keyval)
         self._unregister_key(keyvalue)
-        self.emit('key-released')
+        self.emit('key-released', keyvalue)
         return True
 
     def _register_key(self, key):
