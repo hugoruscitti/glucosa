@@ -69,7 +69,7 @@ class Player(glucosa.Sprite):
     def on_key_down(self, widget):
         self.update_control_state()
 
-    def on_key_up(self, widget):
+    def on_key_up(self, widget, event):
         self.update_control_state()
 
     def update_control_state(self):

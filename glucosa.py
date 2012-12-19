@@ -408,10 +408,10 @@ class Sprite(gobject.GObject):
     y = property(get_y, set_y, doc="Define la posicion vertical")
 
     def get_left(self):
-        return self.x - (self.image.width * self.scale / 2)
+        return self.x
 
     def set_left(self, x):
-        self.x = x + (self.image.width * self.scale / 2)
+        self.x = x
 
     def get_right(self):
         return self.left + (self.image.width * self.scale)
@@ -423,10 +423,10 @@ class Sprite(gobject.GObject):
     right = property(get_right, set_right, doc="Define la posición derecha del Sprite")
 
     def get_top(self):
-        return self.y - (self.image.height * self.scale / 2)
+        return self.y
 
     def set_top(self, y):
-        self.y = y + (self.image.height * self.scale / 2)
+        self.y = y
 
     def get_bottom(self):
         return self.top + (self.image.height * self.scale)
@@ -438,7 +438,7 @@ class Sprite(gobject.GObject):
     bottom = property(get_bottom, set_bottom, doc="Define la posición inferior del Sprite")
 
 
-class Text:
+class Text(gobject.GObject):
     """Muestra un texto en la pantalla.
 
         >>> texto = glucosa.Text('Hola Mundo\\nBienvenido a Glucosa!', 10, 100, face='Arial', size=18)
@@ -448,7 +448,11 @@ class Text:
 
     """
 
+    __gsignals__ = {
+             'update': (gobject.SIGNAL_RUN_FIRST, None, [])}
+
     def __init__(self, text, x, y, size = 12, color = (0, 0, 0), face = "Monospace"):
+        gobject.GObject.__init__(self)
         self.text = text
         self.x = x
         self.y = y
@@ -471,6 +475,9 @@ class Text:
                                                          self.size,
                                                          self.face)
             dy += text_height
+
+    def update(self):
+        pass
 
 class Singleton(type):
     """Clase para garantizar que una clase sólo tenga una instancia y
@@ -532,7 +539,7 @@ class Events(gobject.GObject):
 					'mouse-scroll-up': (gobject.SIGNAL_RUN_FIRST, None, [object]),
 					'mouse-scroll-down': (gobject.SIGNAL_RUN_FIRST, None, [object]),
 					'key-pressed': (gobject.SIGNAL_RUN_FIRST, None, []),
-					'key-released': (gobject.SIGNAL_RUN_FIRST, None, [])}
+					'key-released': (gobject.SIGNAL_RUN_FIRST, None, [object])}
 
     def __init__(self, widget):
         gobject.GObject.__init__(self)
@@ -599,6 +606,9 @@ class Events(gobject.GObject):
         self.emit('key-pressed')
         return len(self._keys_pressed) > 0
 
+    def get_keys_down(self):
+        return self._keys_pressed
+
     def _key_pressed(self, widget, event):
         keyvalue = gtk.gdk.keyval_name(event.keyval)
 
@@ -616,7 +626,7 @@ class Events(gobject.GObject):
     def _key_released(self, widget, event):
         keyvalue = gtk.gdk.keyval_name(event.keyval)
         self._unregister_key(keyvalue)
-        self.emit('key-released')
+        self.emit('key-released', keyvalue)
         return True
 
     def _register_key(self, key):
