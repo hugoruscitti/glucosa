@@ -408,10 +408,10 @@ class Sprite(gobject.GObject):
     y = property(get_y, set_y, doc="Define la posicion vertical")
 
     def get_left(self):
-        return self.x - (self.image.width * self.scale / 2)
+        return self.x
 
     def set_left(self, x):
-        self.x = x + (self.image.width * self.scale / 2)
+        self.x = x
 
     def get_right(self):
         return self.left + (self.image.width * self.scale)
@@ -423,10 +423,10 @@ class Sprite(gobject.GObject):
     right = property(get_right, set_right, doc="Define la posición derecha del Sprite")
 
     def get_top(self):
-        return self.y - (self.image.height * self.scale / 2)
+        return self.y
 
     def set_top(self, y):
-        self.y = y + (self.image.height * self.scale / 2)
+        self.y = y
 
     def get_bottom(self):
         return self.top + (self.image.height * self.scale)
