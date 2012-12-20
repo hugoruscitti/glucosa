@@ -280,7 +280,7 @@ class Sprite(gobject.GObject):
         self.scale = scale
         self.rotation = rotation
         self.flip = flip
-        self.radius = (max(self.image.width, self.image.height) / 2)
+        self.radius = (max(self.rectangle.width, self.rectangle.height) / 2)
         self.type_collision = type_collision
 
     def set_pos(self, x=None, y=None):
@@ -336,8 +336,20 @@ class Sprite(gobject.GObject):
 
     def set_scale(self, scale):
         """Escalar el sprite"""
-        self.scale = scale
+        self._scale = scale
+        if scale == 1:
+            self.rectangle.width = self.image.width
+            self.rectangle.height = self.image.height
+        else:
+            self.rectangle.width = self.image.width * scale
+            self.rectangle.height = self.image.height * scale
+        self.radius = (max(self.rectangle.width, self.rectangle.height) / 2)
         self.emit('update')
+
+    def get_scale(self):
+        return self._scale
+
+    scale = property(get_scale, set_scale, doc="Define la escala del sprite")
 
     def draw(self, context):
         """ Dibuja un el sprite en el contexto """
