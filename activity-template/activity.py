@@ -89,13 +89,13 @@ class Game:
         self.canvas = glucosa.GameArea()
         self.canvas.connect('update', self.on_update)
         self.canvas.set_update_loop(60)
-        
+
         image = glucosa.Image('../data/aceituna.png')
         self.sprite = glucosa.Sprite(image, 100, 100, 18, 18, scale=2)
         self.canvas.add_sprite(self.sprite)
         self.events = glucosa.Events(self.canvas)
-        self.events.on_mouse_scroll_up += self.rueda_del_raton_arriba
-        self.events.on_mouse_scroll_down += self.rueda_del_raton_abajo
+        self.events.connect('mouse-scroll-up', self.rueda_del_raton_arriba)
+        self.events.connect('mouse-scroll-down', self.rueda_del_raton_abajo)
 
     def rueda_del_raton_arriba(self, evento):
         self.sprite.set_scale(0.1)
