@@ -150,7 +150,7 @@ def create_window(fps=60):
 
     return (window, canvas)
 
-class Image:
+class Image(object):
     """Una imagen simple, que puede ser dibujada por un sprite.
 
     Por ejemplo:
@@ -518,6 +518,32 @@ class Singleton(type):
             self.instance = super(Singleton, self).__call__(*args, **kw)
         return self.instance
 
+class Control():
+    """Representa un control de videojuegos tradicional.
+
+    Tiene atributos como 'left', 'right', 'up', 'down' y 'fire', para
+    indicar si esos controles estan siendo pulsados.
+    """
+
+    def __init__(self, canvas):
+        self.events = Events(canvas)
+        self.events.connect('key-pressed', self.on_key_press)
+        self._reset_state()
+
+    def on_key_press(self, widget):
+        self.left = self.events.is_pressed(Events.K_LEFT)
+        self.right = self.events.is_pressed(Events.K_RIGHT)
+        self.up = self.events.is_pressed(Events.K_UP)
+        self.down = self.events.is_pressed(Events.K_DOWN)
+        self.fire = self.events.is_pressed(Events.K_SPACE)
+
+    def _reset_state(self):
+        self.left = False
+        self.right = False
+        self.up = False
+        self.down = False
+        self.fire = False
+
 
 class Events(gobject.GObject):
     """ Gestor de los posibles eventos que se producen en glucosa.
@@ -691,7 +717,7 @@ class Events(gobject.GObject):
     K_TAB = 'Tab'
 
 
-class Sound:
+class Sound(object):
     """Un sonido que se puede reproducir una a mas veces.
 
         >>> s = Sound("data/sound.wav")
@@ -712,6 +738,10 @@ class Sound:
         "Reproduce el sonido."
         self.player.set_state(gst.STATE_PLAYING)
 
+    def stop(self):
+        "Detiene el sonido."
+        self.player.set_state(gst.STATE_READY)
+
     def on_message(self, bus, message):
         t = message.type
         if t == gst.MESSAGE_EOS:
@@ -723,7 +753,7 @@ class Sound:
             print "Error: %s" % err, debug
             self.playmode = False
 
-class Pencil:
+class Pencil(object):
     """Representa un contexto de dibujo donde se pueden dibujar figuras geometricas.
 
         >>> self.lapiz = glucosa.Pencil()
@@ -842,6 +872,9 @@ class GameArea(gtk.DrawingArea):
         """Agrega un sprite a el area de juego"""
         self.sprites.append(sprite)
         sprite.connect('update', self._redraw)
+
+    def remove_sprite(self, sprite):
+        self.sprites.remove(sprite)
 
     def set_background(self, background):
         """Define el fondo del area de juego"""
