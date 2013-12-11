@@ -51,8 +51,7 @@ maravillas:
 
 image = glucosa.Image('aceituna.png')
 sprite = glucosa.Sprite(image)
-sprite.x = 50
-sprite.y = 50
+sprite.set_pos(50, 50)
 </code></pre>
         </td>
         <td>
@@ -67,12 +66,12 @@ sprite.y = 50
 
 image = glucosa.Image('aceituna.png')
 s1 = glucosa.Sprite(image, x=77, y=28)
-s1.scale = 2
-s1.rotation = 40
+s1.set_scale(2)
+s1.set_rotation(40)
 
 s2 = glucosa.Sprite(image, x=25, y=70)
-s2.scale = 0.5
-s2.rotation = -30
+s2.set_scale(0.5)
+s2.rotation(-30)
 </code></pre>
 
         </td>
